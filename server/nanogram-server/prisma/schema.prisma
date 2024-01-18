@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,5 +16,5 @@ nome_completo String @db.VarChar(64)
 nome_de_usuario String @db.VarChar(50)
 email String @db.VarChar(50)  @unique
 senha String 
-foto_de_perfil String? @default("Caminho para imagem padrão")
+foto_de_perfil Bytes @db.LongBlob @default("")//definir imagem padrao
 }
