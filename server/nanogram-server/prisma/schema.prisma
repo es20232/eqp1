@@ -13,7 +13,7 @@ datasource db {
 model User {
   id              Int    @id @default(autoincrement())
   full_name       String @db.VarChar(64)
-  username        String @db.VarChar(50)
+  username        String @db.VarChar(50) @unique
   email           String @unique @db.VarChar(50)
   password        String
   profile_picture Bytes? @default("") @db.LongBlob //definir imagem padrao
