@@ -10,11 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-id Int @id @default(autoincrement())
-full_name String @db.VarChar(64)
-username String @db.VarChar(50) 
-email String @db.VarChar(50)  @unique
-password String 
-profile_picture Bytes? @db.LongBlob @default("")//definir imagem padrao
+model User {
+  id              Int    @id @default(autoincrement())
+  full_name       String @db.VarChar(64)
+  username        String @db.VarChar(50)
+  email           String @unique @db.VarChar(50)
+  password        String
+  profile_picture Bytes? @default("") @db.LongBlob //definir imagem padrao
 }
