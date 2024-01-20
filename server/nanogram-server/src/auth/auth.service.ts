@@ -55,7 +55,6 @@ export class AuthService {
             email
            }
            const secret= process.env.JWT_SECRET;
-           console.log("secret: "+secret)
            const token = await this.jwt.signAsync(payload,{
             expiresIn:'30m',secret: secret,
            });
