@@ -1,11 +1,10 @@
 import { ForbiddenException, Injectable, Post } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MailService } from 'src/mail/mail.service';
-import { AuthDto, ResetPasswordDto, UserDto } from './dto';
+import { AuthDto, ResetPasswordDto, UserDto, ResetCodeDto, NewPasswordDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
-import { ResetCode } from '.prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -54,9 +53,10 @@ export class AuthService {
         return this.generateToken(user.id, user.email, '30m');
     }
 
-    async generateToken(Userid: number, email: string, time: string): Promise<{ acess_token: string }> {
+    async generateToken(id: number, email: string, time: string)
+        : Promise<{ acess_token: string }> {
         const payload = {
-            sub: Userid,
+            sub: id,
             email
         }
         const secret = process.env.JWT_SECRET;
@@ -70,7 +70,8 @@ export class AuthService {
 
     }
 
-    async requestResetPassword(dto: ResetPasswordDto): Promise<{ acess_token: string }> {
+    async requestResetPassword(dto: ResetPasswordDto)
+        : Promise<{ acess_token: string }> {
         const user = await this.prisma.user.findUnique({
             where: {
                 email: dto.email
@@ -88,9 +89,9 @@ export class AuthService {
 
         try {
             const user = await this.prisma.resetCode.upsert({
-                where : {userEmail: dto.email},
-                update: {code: code.toString(), expiration: expiration},
-                create: { code: code.toString(), expiration: expiration, userEmail: dto.email}
+                where: { userEmail: dto.email },
+                update: { code: code.toString(), expiration: expiration },
+                create: { code: code.toString(), expiration: expiration, userEmail: dto.email }
             });
         } catch (error) {
 
@@ -103,7 +104,34 @@ export class AuthService {
         return token;
     }
 
-    async verifyResetCode (dto : ResetCode) {
-        return {msg: 'ok'}
+    async verifyResetCode(dto: ResetCodeDto, user: { id: number, email: string })
+        : Promise<{ acess_token: string }> {
+        const reset_code = await this.prisma.resetCode.findFirst({
+            where: {
+                userEmail: user.email
+            }
+        });
+
+        if (!reset_code) throw new ForbiddenException('There is no request');
+
+        if (dto.code != reset_code.code) throw new ForbiddenException('Invalid code');
+
+        const currentDateTime = new Date();
+        if (currentDateTime > reset_code.expiration) throw new ForbiddenException('Old code');
+
+        return this.generateToken(reset_code.id, reset_code.userEmail, '45m');
+    }
+
+
+    async updatePassword(dto: NewPasswordDto, user: { id: number, userEmail: string }) {
+        const hash_password = await argon.hash(dto.password);
+        const updateUser = await this.prisma.user.update({
+            where: { email: user.userEmail },
+            data: { password: hash_password }
+        })
+
+        const deleteResetCode = await this.prisma.resetCode.delete({
+            where: { id: user.id }
+        });
     }
 }
