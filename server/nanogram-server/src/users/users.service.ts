@@ -6,22 +6,25 @@ import * as argon from 'argon2';
 @Injectable()
 export class UsersService {
     constructor(private prisma: PrismaService){}
-    async get(){
-        return 'me';
-    }
-    async getUser(username:string){
+    async get(id: number){
+      try{
         const user= await this.prisma.user.findUnique({
-          where:{
-              username,
-          },
-        });
-        if(!user){
-            throw new NotFoundException("Usuário não encontrado");
-        }
-        return user;
+        where:{
+            id,
+        },
+
+      });
+      return user;
     }
-    async update(dto: usersupdateDto,username: string,image?: profile_picDto,){
-      this.getUser(username);
+      catch(error){
+        console.error(`Error : ${error.message}`);
+        throw new NotFoundException('User not found.');
+      }
+      
+    }
+   
+    async update(dto: usersupdateDto,id: number,image?: profile_picDto,){
+      this.get(id);
       
       if(dto.password){
            dto.password = await argon.hash(dto.password);
@@ -29,7 +32,7 @@ export class UsersService {
       if(!image){ 
         return await this.prisma.user.update({
           where: {
-              username,
+              id,
             },
             data: {
               ...dto,
@@ -39,7 +42,7 @@ export class UsersService {
         }
         return await this.prisma.user.update({
           where: {
-              username,
+              id,
             },
             data: {
               ...dto,
@@ -47,5 +50,18 @@ export class UsersService {
             },
           });
     }
+    async delete(id: number){
+       this.get(id);
+       const user= await this.prisma.user.delete(
+        {
+          where:{
+            id,
+          }
+        }
+       )
+       delete user.password;
+       return user;
+    }
+   
    
 }

@@ -25,5 +25,5 @@ model ResetCode {
   code       String   @unique @db.VarChar(6)
   expiration DateTime
   userEmail  String   @unique @db.VarChar(50)
-  user       User     @relation(fields: [userEmail], references: [email])
+  user       User     @relation(fields: [userEmail], references: [email],onDelete: Cascade)
 }

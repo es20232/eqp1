@@ -3,7 +3,7 @@ import {
     ExecutionContext,
 } from '@nestjs/common';
 
-export const User = createParamDecorator(
+export const GetUser = createParamDecorator(
     (data: string | undefined, ctx: ExecutionContext,) => {
         const request: Express.Request = ctx
             .switchToHttp()
