@@ -28,3 +28,10 @@ export class AuthDto {
     @IsNotEmpty()
     password: string;
 }
+
+export class ResetPasswordDto {
+    @IsNotEmpty()
+    @IsString()
+    @IsEmail()
+    email: string;
+  }
