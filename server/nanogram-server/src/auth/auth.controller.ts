@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthDto, ResetPasswordDto, UserDto } from './dto';
 import { ResetCode } from '.prisma/client';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { User} from './decorator'
 
 @Controller('auth')
 export class AuthController {
@@ -27,8 +27,8 @@ export class AuthController {
 
     @UseGuards(AuthGuard('jwt'))
     @Post('reset-password/verify')
-    verify(@Body() dto: ResetCode, @Req() req: Request) {
-        console.log(req.user)
+    verify(@Body() dto: ResetCode, @User('id') id: number) {
+        console.log(id);
         return this.AuthService.verifyResetCode(dto);
     }
 
