@@ -8,7 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService, private jwt: JwtService, private mail: MailService) { }
+    constructor(private prisma: PrismaService,
+        private jwt: JwtService,
+        private mail: MailService) { }
 
     async signup(dto: UserDto) {
         const hash_password = await argon.hash(dto.password);
@@ -67,8 +69,7 @@ export class AuthService {
 
     }
 
-
-    async requestResetPassword(dto: ResetPasswordDto): Promise<{ msg: string }> {
+    async requestResetPassword(dto: ResetPasswordDto): Promise<{ acess_token: string }> {
         const user = await this.prisma.user.findUnique({
             where: {
                 email: dto.email
@@ -79,9 +80,26 @@ export class AuthService {
 
         const token = this.resetToken(dto.email);
 
-        await this.mail.sendResetPassword(dto.email, "");        
+        const code = Math.floor(Math.random() * 1000000 % 999999);
 
-        return {msg: 'ok'};
+        const expiration = new Date();
+        expiration.setMinutes(expiration.getMinutes() + 30);
+
+        try {
+            const user = await this.prisma.resetCode.upsert({
+                where : {userEmail: dto.email},
+                update: {code: code.toString(), expiration: expiration},
+                create: { code: code.toString(), expiration: expiration, userEmail: dto.email}
+            });
+        } catch (error) {
+
+            throw new ForbiddenException('Error in code generation');
+
+        }
+
+        await this.mail.sendResetPassword(dto.email, code.toString());
+
+        return token;
     }
 
     async resetToken(email: string): Promise<{ acess_token: string }> {
