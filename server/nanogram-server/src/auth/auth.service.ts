@@ -5,6 +5,7 @@ import { AuthDto, ResetPasswordDto, UserDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
+import { ResetCode } from '.prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,7 @@ export class AuthService {
 
         try {
             const user = await this.prisma.user.create({ data });
-            return this.signToken(user.id, user.email);
+            return this.generateToken(user.id, user.email, '30m');
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
@@ -50,17 +51,17 @@ export class AuthService {
         if (!password_matches) throw new ForbiddenException('Credentials incorrect');
 
 
-        return this.signToken(user.id, user.email);
+        return this.generateToken(user.id, user.email, '30m');
     }
 
-    async signToken(Userid: number, email: string): Promise<{ acess_token: string }> {
+    async generateToken(Userid: number, email: string, time: string): Promise<{ acess_token: string }> {
         const payload = {
             sub: Userid,
             email
         }
         const secret = process.env.JWT_SECRET;
         const token = await this.jwt.signAsync(payload, {
-            expiresIn: '30m', secret: secret,
+            expiresIn: time, secret: secret,
         });
         return {
             acess_token: token,
@@ -78,7 +79,7 @@ export class AuthService {
 
         if (!user) throw new ForbiddenException('Email not registered');
 
-        const token = this.resetToken(dto.email);
+        const token = this.generateToken(user.id, dto.email, '30m');
 
         const code = Math.floor(Math.random() * 1000000 % 999999);
 
@@ -102,19 +103,7 @@ export class AuthService {
         return token;
     }
 
-    async resetToken(email: string): Promise<{ acess_token: string }> {
-        const payload = {
-            sub: email
-        }
-
-        const secret = process.env.JWT_SECRET;
-        const token = await this.jwt.signAsync(payload, {
-            expiresIn: '30m', secret: secret,
-        });
-
-        return {
-            acess_token: token,
-        };
-
+    async verifyResetCode (dto : ResetCode) {
+        return {msg: 'ok'}
     }
 }
