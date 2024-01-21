@@ -10,17 +10,16 @@ import { join } from 'path';
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: process.env.HOST,
-        port: 465,
-        ignoreTLS: true,
-        secure: true,
+        host: process.env.HOST_EMAIL,
+        secure: false,
+        port:587,
         auth: {
           user: process.env.USER_EMAIL,
           pass: process.env.PASSWORD_EMAIL,
         },
       },
       defaults: {
-        from: '',
+        from: '"',
       },
       template: {
         dir: join(__dirname, 'templates'),
@@ -34,4 +33,5 @@ import { join } from 'path';
   providers: [MailService],
   exports: [MailService]
 })
+
 export class MailModule { }
