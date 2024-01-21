@@ -14,6 +14,7 @@ export class UsersService {
         },
 
       });
+      delete user.password;
       return user;
     }
       catch(error){
@@ -25,12 +26,12 @@ export class UsersService {
    
     async update(dto: usersupdateDto,id: number,image?: profile_picDto,){
       this.get(id);
-      
+     
       if(dto.password){
            dto.password = await argon.hash(dto.password);
       }  
       if(!image){ 
-        return await this.prisma.user.update({
+        const user= await this.prisma.user.update({
           where: {
               id,
             },
@@ -39,8 +40,10 @@ export class UsersService {
              
             },
           });
+          delete user.password
+          return user;
         }
-        return await this.prisma.user.update({
+        const user= await this.prisma.user.update({
           where: {
               id,
             },
@@ -49,6 +52,8 @@ export class UsersService {
               profile_picture:image.buffer,
             },
           });
+          delete user.password;
+          return user;
     }
     async delete(id: number){
        this.get(id);

@@ -34,10 +34,16 @@ export class ResetPasswordDto {
     @IsString()
     @IsEmail()
     email: string;
-  }
+}
 
-export class ResetCode {
+export class ResetCodeDto {
     @IsNotEmpty()
-    @IsNumberString()
-    code : string;
+    @IsString()
+    code: string;
+}
+
+export class NewPasswordDto {
+    @IsNotEmpty()
+    @IsString()
+    password: string;
 }

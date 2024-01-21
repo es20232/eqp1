@@ -15,7 +15,7 @@ export class UsersController {
         return this.usersService.get(id);
     }
     @UseGuards(AuthGuard('jwt'))
-    @Patch('editme')
+    @Patch('me')
     @UseInterceptors(FileInterceptor('profile_picture'))
     userUpdate(@GetUser('username') username: string,@UploadedFile(new FileTypeValidationPipe()) image: profile_picDto,@GetUser('id') id: number,@Body() dto: usersupdateDto) {
         return this.usersService.update(dto,id,image);
