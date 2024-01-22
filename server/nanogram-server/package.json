@@ -32,13 +32,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv": "^16.3.1",
-<<<<<<< HEAD
     "file-type": "^16.5.3",
     "multer": "^1.4.5-lts.1",
-=======
-    "handlebars": "4.5",
-    "nodemailer": "6.3",
->>>>>>> 94668d75687601fcff34338128fc06c4d0c23c6e
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
