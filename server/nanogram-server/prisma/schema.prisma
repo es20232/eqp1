@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int         @id @default(autoincrement())
+  full_name       String      @db.VarChar(64)
+  username        String      @unique @db.VarChar(50)
+  email           String      @unique @db.VarChar(50)
+  password        String
+  profile_picture Bytes?      @default("") @db.LongBlob //definir imagem padrao
+  ResetCode       ResetCode[]
+}
+
+model ResetCode {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique @db.VarChar(6)
+  expiration DateTime
+  userEmail  String   @unique @db.VarChar(50)
+  user       User     @relation(fields: [userEmail], references: [email],onDelete: Cascade)
+}

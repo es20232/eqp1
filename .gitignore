@@ -148,7 +148,9 @@ dist
 
 node_modules
 
-*.sublime*
+migrations
+
+*.sublime
 
 psd
 thumb
