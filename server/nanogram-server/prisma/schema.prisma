@@ -2,13 +2,14 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 //so para commitar
 
-generator client {
-  provider = "prisma-client-js"
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+generator client {
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -26,5 +27,5 @@ model ResetCode {
   code       String   @unique @db.VarChar(6)
   expiration DateTime
   userEmail  String   @unique @db.VarChar(50)
-  user       User     @relation(fields: [userEmail], references: [email],onDelete: Cascade)
+  user       User     @relation(fields: [userEmail], references: [email])
 }

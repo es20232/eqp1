@@ -6,67 +6,46 @@ import * as argon from 'argon2';
 @Injectable()
 export class UsersService {
     constructor(private prisma: PrismaService){}
-    async get(id: number){
-      try{
+    async get(){
+        return 'me';
+    }
+    async getUser(username:string){
         const user= await this.prisma.user.findUnique({
-        where:{
-            id,
-        },
-
-      });
-      delete user.password;
-      return user;
+          where:{
+              username,
+          },
+        });
+        if(!user){
+            throw new NotFoundException("Usuário não encontrado");
+        }
+        return user;
     }
-      catch(error){
-        console.error(`Error : ${error.message}`);
-        throw new NotFoundException('User not found.');
-      }
+    async update(dto: usersupdateDto,username: string,image?: profile_picDto,){
+      this.getUser(username);
       
-    }
-   
-    async update(dto: usersupdateDto,id: number,image?: profile_picDto,){
-      this.get(id);
-     
       if(dto.password){
            dto.password = await argon.hash(dto.password);
       }  
       if(!image){ 
-        const user= await this.prisma.user.update({
+        return await this.prisma.user.update({
           where: {
-              id,
+              username,
             },
             data: {
               ...dto,
              
             },
           });
-          delete user.password
-          return user;
         }
-        const user= await this.prisma.user.update({
+        return await this.prisma.user.update({
           where: {
-              id,
+              username,
             },
             data: {
               ...dto,
               profile_picture:image.buffer,
             },
           });
-          delete user.password;
-          return user;
     }
-    async delete(id: number){
-       this.get(id);
-       const user= await this.prisma.user.delete(
-        {
-          where:{
-            id,
-          }
-        }
-       )
-       delete user.password;
-       return user;
-    }
-   
    
 }

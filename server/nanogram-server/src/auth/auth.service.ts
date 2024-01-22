@@ -3,8 +3,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { MailService } from 'src/mail/mail.service';
 import { AuthDto, ResetPasswordDto, UserDto, ResetCodeDto, NewPasswordDto } from './dto';
 import * as argon from 'argon2';
-import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
