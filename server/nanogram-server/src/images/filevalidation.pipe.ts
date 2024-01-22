@@ -4,6 +4,9 @@ import { fromBuffer } from "file-type"
 @Injectable()
 export class FileTypeValidationPipe implements PipeTransform {
   async transform(value: Express.Multer.File) {
+    if(!value){
+      return value;
+    }
     const { mime } = await fromBuffer(value.buffer)
     const MIME_TYPES = ["image/jpeg", "image/png", "image/jpg"]
 

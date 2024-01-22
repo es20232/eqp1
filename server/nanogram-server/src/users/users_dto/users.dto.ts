@@ -22,8 +22,10 @@ export class usersupdateDto {
     
 }
 export class profile_picDto{
-    fieldname:string;
+    @IsOptional()
+    @IsNotEmpty()
     buffer: Buffer;
     @IsOptional()
+    @IsNotEmpty()
     profile_picture: Express.Multer.File;
 }
