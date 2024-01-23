@@ -147,8 +147,10 @@ dist
 **/*.back.*
 
 node_modules
+
 migrations
-*.sublime*
+
+*.sublime
 
 psd
 thumb
