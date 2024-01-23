@@ -6,8 +6,7 @@ class Usuário{
   - nome_de_usuario: string
   - email: string
   - senha: string
-  - biografia: string
-  - foto_perfil:Imagem
+  - foto_de_perfil:Imagem
   + postar():void
   + editar_perfil():void
   + recuperar_senha():void
