@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersService } from './users/users.service';
 import { MailModule } from './mail/mail.module';
 
+
 @Module({
   imports: [AuthModule, UsersModule, PrismaModule, MailModule],
   controllers: [UsersController],
