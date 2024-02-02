@@ -12,9 +12,42 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
+const schemaForm = z.object({
+  address: z.object({
+    username: z.string().nonempty('Digite um nome de usuário'),
+    password: z.string().nonempty('Digite uma senha').min(6, 'Quantidade de caracteres inválida')
+  })
+}).transform((field) => ({
+  address: {
+    username: field.address.username,
+    password: field.address.password
+  }
+}));
+
+type FormProps = z.infer<typeof schemaForm>
 
 export default function Login() {
+
+  const { handleSubmit, register, formState: { errors }} = useForm<FormProps>({
+    criteriaMode: 'all',
+    mode: 'all',
+    resolver: zodResolver(schemaForm),
+    defaultValues: {
+      address:{
+        username:'',
+        password:''
+      }
+    }
+  })
+
+  const handleFormSubmit = (data: FormProps) => {
+    console.log(data);
+  }
+
   return ( 
     <div className='w-full min-h-screen flex flex-col items-center justify-center' style={{ backgroundColor: '#FF2C46' }}>
       <div className=' items-center justify-center'>
@@ -27,35 +60,46 @@ export default function Login() {
         <CardTitle><b>Login</b></CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit = {handleSubmit(handleFormSubmit)}>
+
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Nome de usuário</Label>
-              <Input type="password" id="name" placeholder="@username" />
+                <Label htmlFor = "username">Nome de usuário</Label>
+                <Input {... register('address.username')} id="username" type="text" placeholder="@username" />
+                {errors.address?.username?.message && (
+                  <p> {errors.address?.username?.message} </p>
+                )}
+
             </div>
+
             <div>
-                <Label htmlFor="name">Senha</Label>
-                <Input type="password" id="name" placeholder="********" />
+                <Label htmlFor = "password">Senha</Label>
+                <Input {... register('address.password')} id="password" type="password" placeholder="********" />
+                {errors.address?.password?.message && (
+                  <p> {errors.address?.password?.message} </p>
+                )}
             </div>
+
             <div className="mt-4 text-xs flex justify-end">
                 <Link className="underline" href='/ResetPassword'>
                     Esqueci minha senha
                 </Link>
             </div>
+
+            <div className="flex justify-end space-x-1.5">
+              <Link href='/SignUp'>
+                    <Button className="border border-customcolor bg-transparent text-customcolor">Cadastre-se</Button>
+              </Link>
+              
+                    <Button type="submit" style={{ backgroundColor: '#FF2C46' }}>Login</Button>
+             
+            </div>
           </div>
+
         </form>
       </CardContent>
-      <CardFooter className="flex justify-end space-x-1.5">
-            <Link href='/SignUp'>
-                  <Button className="border border-customcolor bg-transparent text-customcolor">Cadastre-se</Button>
-            </Link>
-            <Link href='/Dashboard'>
-                  <Button style={{ backgroundColor: '#FF2C46' }}>Login</Button>
-            </Link>
-      </CardFooter>
     </Card>
     </div>
     </div>
   )
 }
-
