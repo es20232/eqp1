@@ -91,7 +91,7 @@ export default function Login() {
                     <Button className="border border-customcolor bg-transparent text-customcolor">Cadastre-se</Button>
               </Link>
               
-                    <Button type="submit" style={{ backgroundColor: '#FF2C46' }}>Login</Button>
+              <Button type="submit" style={{ backgroundColor: '#FF2C46' }}>Login</Button>
              
             </div>
           </div>
