@@ -67,20 +67,20 @@ export default function Login() {
                 <Label htmlFor = "username">Nome de usuário</Label>
                 <Input {... register('address.username')} id="username" type="text" placeholder="@username" />
                 {errors.address?.username?.message && (
-                  <p> {errors.address?.username?.message} </p>
+                  <p className="text-xs" style={{ color: '#ff0033'}}> {errors.address?.username?.message} </p>
                 )}
 
             </div>
 
-            <div>
+            <div className="flex flex-col space-y-1.5">
                 <Label htmlFor = "password">Senha</Label>
                 <Input {... register('address.password')} id="password" type="password" placeholder="********" />
                 {errors.address?.password?.message && (
-                  <p> {errors.address?.password?.message} </p>
+                  <p className="text-xs" style={{ color: '#ff0033'}}> {errors.address?.password?.message} </p>
                 )}
             </div>
 
-            <div className="mt-4 text-xs flex justify-end">
+            <div className="text-xs flex justify-end">
                 <Link className="underline" href='/ResetPassword'>
                     Esqueci minha senha
                 </Link>
