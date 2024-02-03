@@ -27,7 +27,10 @@ export class AuthService {
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
-                    throw new ForbiddenException('Credentianls taken');
+                    if (error.meta.target === 'User_username_key')
+                        throw new ForbiddenException('Username already registered');
+                    if (error.meta.target === 'User_email_key')
+                        throw new ForbiddenException('Email already registered');
                 }
             }
             throw error;
