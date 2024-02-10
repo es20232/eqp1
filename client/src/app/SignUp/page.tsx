@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { createUser, cUser } from '@/actions/auth';
+import React, { useState } from 'react';
 
 const schemaForm = z.object({
     address: z.object({
@@ -43,6 +44,8 @@ type FormProps = z.infer<typeof schemaForm>
 
 export default function SignUp() {
 
+    const [errorMessage, setErrorMessage] = useState("");
+
     const { handleSubmit, register, formState: { errors } } = useForm<FormProps>({
         criteriaMode: 'all',
         mode: 'all',
@@ -65,6 +68,11 @@ export default function SignUp() {
         }
         catch (error) {
             console.log(error.message);
+            if(error.message === "Error: Username already registered"){
+                setErrorMessage("Usuário já registrado");
+            } else if(error.message.toString() === "Error: Email already registered") {
+                setErrorMessage("Email já registrado");
+            }
         }
     }
 
@@ -97,12 +105,15 @@ export default function SignUp() {
                         <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <div className="grid w-full items-center gap-4">
 
+                                {errorMessage && <p className="text-xs" style={{ color: '#ff0033' }}>{errorMessage}</p>}
+
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="name">Nome Completo</Label>
                                     <Input {...register('address.name')} type="text" id="name" placeholder="Nome completo" />
                                     {errors.address?.name?.message && (
                                         <p className="text-xs" style={{ color: '#ff0033' }}> {errors.address?.name?.message} </p>
                                     )}
+                                    
                                 </div>
 
                                 <div className="flex flex-col space-y-1.5">
