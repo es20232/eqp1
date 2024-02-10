@@ -57,13 +57,14 @@ export default function SignUp() {
             }
         }
     })
-
+    
     async function create(user: cUser) {
+        
         try {
             const response = await createUser(user);
         }
         catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     }
 
