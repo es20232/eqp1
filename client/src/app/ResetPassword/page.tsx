@@ -1,5 +1,4 @@
-import * as React from "react"
-
+'use client'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -13,8 +12,31 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import React, { useState } from 'react';
+
+const findUserFormSchema = z.object({
+    email: z.string().nonempty('O email é obrigatório').email('Formato de email inválido')
+})
 
 export default function ResetPassword () {
+  const [output, setOutput] = useState('')
+  const { register, 
+    handleSubmit, 
+    formState: { errors } } 
+    = useForm({
+    resolver: zodResolver(findUserFormSchema)
+  })
+
+  //Requisição
+  function getUser(data: any) {
+      console.log(data)
+      setOutput(JSON.stringify(data, null, 2))
+  }
+
+  
   return (
     <div style={{alignItems:'center', height:'100vh'}} className="w-full h-full flex justify-center">
     <div className='w-full min-h-screen flex flex-col items-center justify-center' style={{ backgroundColor: '#FFFF' }}>
@@ -28,11 +50,17 @@ export default function ResetPassword () {
             <CardDescription>Enviaremos um email com um código de confirmação.</CardDescription>
         </CardHeader>
         <CardContent>
-            <form>
+            <form 
+            onSubmit={handleSubmit(getUser)}>
             <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Email</Label>
-                <Input id="Email" placeholder="Email" />
+                <Label htmlFor="">Email</Label>
+                <Input 
+                
+                placeholder="Email" 
+                {...register('email')}
+                />
+                {errors.email && (<span className="text-xs" style={{ color: '#ff0033' }}>{errors.email.message}</span>)}
                 </div>
                 <div className="flex flex-col space-y-1.5">
                 </div>

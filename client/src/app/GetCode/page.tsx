@@ -1,4 +1,4 @@
-import * as React from "react"
+'use client'
 
 
 import { Button } from "@/components/ui/button"
@@ -13,8 +13,46 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import React, { useState } from 'react';
+
+const getCodeFormSchema = z.object({
+  code: z.string().refine(
+    value => {
+      // Verifica se o valor é uma string
+      if (typeof value !== 'string') {
+        return false;
+      }
+  
+      // Remove espaços em branco e verifica se o comprimento é 6
+      const trimmedValue = value.trim();
+      return trimmedValue.length === 6 && !isNaN(Number(trimmedValue));
+    },
+    {
+      message: 'O código deve ser um número com exatamente 6 dígitos.'
+    }
+  )
+})
 
 export default function GetCode() {
+
+  const [output, setOutput] = useState('')
+  const { register, 
+    handleSubmit, 
+    formState: { errors } } 
+    = useForm({
+    resolver: zodResolver(getCodeFormSchema)
+  })
+
+  //Requisição
+  function getCode(data: any) {
+      console.log(data)
+      setOutput(JSON.stringify(data, null, 2))
+  }
+
+  
   return (
     <div style={{alignItems:'center', height:'100vh'}} className="w-full h-full flex justify-center">
     <div className='w-full min-h-screen flex flex-col items-center justify-center' style={{ backgroundColor: '#FFFF' }}>
@@ -28,11 +66,15 @@ export default function GetCode() {
         <CardDescription>Digite o código de confirmação.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form
+        onSubmit={handleSubmit(getCode)}>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               
-              <Input id="Code" placeholder=" " />
+              <Input id="Code" placeholder=" " 
+              {...register('code')}
+              />
+              {errors.code && (<span className="text-xs" style={{ color: '#ff0033' }}>{errors.code.message}</span>)}
             </div>
             <div className="flex flex-col space-y-1.5">
             </div>
