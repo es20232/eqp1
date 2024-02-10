@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {loginUser, lUser} from '@/actions/auth';
+import React, { useState } from 'react';
 
 const schemaForm = z.object({
     address: z.object({
@@ -32,6 +33,8 @@ const schemaForm = z.object({
 type FormProps = z.infer<typeof schemaForm>
 
 export default function Login() {
+
+    const [errorMessage, setErrorMessage] = useState("");
 
     const { handleSubmit, register, formState: { errors } } = useForm<FormProps>({
         criteriaMode: 'all',
@@ -50,7 +53,10 @@ export default function Login() {
             const response = await loginUser(user);
         }
         catch (error) {
-            console.error(error);
+            console.error(error.message);
+            if(error.message === "Error: Credentials incorrect"){
+                setErrorMessage("Credenciais incorretas");
+            }
         }
     }
 
@@ -78,6 +84,8 @@ export default function Login() {
                         <form onSubmit={handleSubmit(handleFormSubmit)}>
 
                             <div className="grid w-full items-center gap-4">
+
+                            {errorMessage && <p className="text-xs" style={{ color: '#ff0033' }}>{errorMessage}</p>}
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="username">Nome de usuário</Label>
                                     <Input {...register('address.username')} id="username" type="text" placeholder="@username" />
