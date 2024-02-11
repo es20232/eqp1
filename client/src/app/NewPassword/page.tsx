@@ -28,6 +28,9 @@ const newPasswordFormSchema = z.object({
 })
 
 export default function NewPassword() {
+
+    const [errorMessage, setErrorMessage] = useState("");
+
     const [output, setOutput] = useState('')
     const { register,
         handleSubmit,
@@ -37,7 +40,7 @@ export default function NewPassword() {
             mode: 'all',
             resolver: zodResolver(newPasswordFormSchema)
         })
-
+   
     //Requisição
     // Password not updated
     // Unexpected error
@@ -48,13 +51,24 @@ export default function NewPassword() {
             // Password not updated
             // Unexpected error
             console.log(error.message)
+            if(error.message.toString() === "Error: Password not updated") {
+                setErrorMessage("Não foi possível atuaçizar senha");
+              }else if(error.message.toString() === "Error: Unexpected error") {
+                setErrorMessage("Erro inesperado");
         }
     }
+}
     function getPasswords(data: any) {
         console.log(data)
         update(data)
     }
 
+    function handleSubmitOnEnter(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Impede o comportamento padrão da tecla Enter
+            handleSubmit(getPasswords)(); // Submete o formulário manualmente
+        }
+    }
 
     return (
         <div style={{ alignItems: 'center', height: '100vh' }} className="w-full h-full flex justify-center">
@@ -74,10 +88,11 @@ export default function NewPassword() {
                             <div className="grid w-full items-center gap-4">
                                 <div className="flex flex-col space-y-1.5">
 
+                                {errorMessage && <p className="text-xs" style={{ color: '#ff0033' }}>{errorMessage}</p>}
 
                                     <Label htmlFor="password">Nova senha</Label>
                                     <Input {...register('password')}
-                                        placeholder="Nova senha"
+                                        id="password" type="password" placeholder="********" 
                                     />
                                     {errors.password && (<span className="text-xs" style={{ color: '#ff0033' }}>{errors.password.message}</span>)}
                                 </div>
@@ -86,28 +101,30 @@ export default function NewPassword() {
 
                                     <Label htmlFor="confirmassword">Confirmar nova senha</Label>
                                     <Input {...register('confirmpassword')}
-                                        placeholder="Digite novamente a senha"
+                                        id="password" type="password" placeholder="********"
+                                        onKeyDown={handleSubmitOnEnter} 
                                     />
                                     {errors.confirmpassword && (<span className="text-xs" style={{ color: '#ff0033' }}>{errors.confirmpassword.message}</span>)}
                                 </div>
 
 
-                                <div className="flex flex-col space-y-1.5">
+                                <div className="flex justify-end space-x-1.5">
+                        <div className="flex justify-end space-x-1.5">
+                                <Link href='/Login'>
+                                    <Button className="border border-customcolor bg-transparent text-customcolor">Cancelar</Button>
+                                </Link>
+                                </div>
+                        
+                            <Button type='submit' style={{ backgroundColor: '#FF2C46' }}>Salvar</Button>
                                 </div>
                             </div>
                         </form>
-                        <pre>{output}</pre>
                     </CardContent>
-                    <CardFooter className="flex justify-end space-x-1.5">
-                        <Link href='/Login'>
-                            <Button className="border border-customcolor bg-transparent text-customcolor">Cancelar</Button>
-                        </Link>
-                        <Link href='/Login'>
-                            <Button style={{ backgroundColor: '#FF2C46' }}>Salvar</Button>
-                        </Link>
+                    <CardFooter className="flex justify-end space-y-1.5">
+                        
                     </CardFooter>
                 </Card>
             </div>
         </div>
     )
-}
+    }

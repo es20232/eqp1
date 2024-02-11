@@ -18,6 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import React, { useState } from 'react';
 import { Code, verifyCode } from "@/actions/auth"
+import { useRouter } from 'next/navigation';
 
 const getCodeFormSchema = z.object({
   code: z.string().refine(
@@ -39,6 +40,8 @@ const getCodeFormSchema = z.object({
 
 export default function GetCode() {
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [output, setOutput] = useState('')
   const { register, 
     handleSubmit, 
@@ -56,7 +59,18 @@ export default function GetCode() {
         // Invalid code
         // Unauthorized
         // Unexpected error
-        console.log(error.message)    
+        console.log(error.message);
+        if(error.message === "Error: There is no request"){
+          setErrorMessage("Não existe requisição");
+        } else if(error.message.toString() === "Error: Old code") {
+          setErrorMessage("Código expirado");
+        }else if(error.message.toString() === "Error: Invalid code") {
+          setErrorMessage("Código inválido");
+        }else if(error.message.toString() === "Error: Unauthorized") {
+          setErrorMessage("Navegador não autorizado");
+        }else if(error.message.toString() === "Error: Unexpected error") {
+          setErrorMessage("Erro inesperado");
+        }     
     }
 }
   //Requisição
@@ -65,6 +79,15 @@ export default function GetCode() {
       verify(data)
   }
 
+  const router = useRouter();
+
+  function handleKeyPress(event) {
+      // 13 é o código da tecla Enter
+      if (event.keyCode === 13) {
+          event.preventDefault(); // Impede o comportamento padrão do Enter
+          handleSubmit(getCode)(); // Submete o formulário manualmente
+      }
+  }
   
   return (
     <div style={{alignItems:'center', height:'100vh'}} className="w-full h-full flex justify-center">
@@ -84,23 +107,26 @@ export default function GetCode() {
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               
-              <Input id="Code" placeholder=" " 
+            {errorMessage && <p className="text-xs" style={{ color: '#ff0033' }}>{errorMessage}</p>}
+
+              <Input id="Code" placeholder="Ex:123456" 
               {...register('code')}
+              onKeyDown={handleKeyPress}
               />
               {errors.code && (<span className="text-xs" style={{ color: '#ff0033' }}>{errors.code.message}</span>)}
             </div>
-            <div className="flex flex-col space-y-1.5">
+            <div className="flex justify-end space-x-1.5">
+            <Link href='/ResetPassword'>
+              <Button className="border border-customcolor bg-transparent text-customcolor">Voltar</Button>
+            </Link>
+              <Button type='submit' style={{ backgroundColor: '#FF2C46' }}>Avançar</Button>
             </div>
+            
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex justify-end space-x-1.5">
-      <Link href='/ResetPassword'>
-      <Button className="border border-customcolor bg-transparent text-customcolor">Voltar</Button>
-      </Link>
-        <Link href='/NewPassword'>
-        <Button style={{ backgroundColor: '#FF2C46' }}>Avançar</Button>
-      </Link>
+      
       </CardFooter>
     </Card>
     </div>
