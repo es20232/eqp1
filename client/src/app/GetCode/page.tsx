@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import React, { useState } from 'react';
+import { Code, verifyCode } from "@/actions/auth"
 
 const getCodeFormSchema = z.object({
   code: z.string().refine(
@@ -46,10 +47,22 @@ export default function GetCode() {
     resolver: zodResolver(getCodeFormSchema)
   })
 
+  async function verify(code: Code) {
+    try {
+        const responde = await verifyCode(code);
+    } catch (error) {
+        // There is no request
+        // Old code
+        // Invalid code
+        // Unauthorized
+        // Unexpected error
+        console.log(error.message)    
+    }
+}
   //Requisição
   function getCode(data: any) {
       console.log(data)
-      setOutput(JSON.stringify(data, null, 2))
+      verify(data)
   }
 
   

@@ -65,7 +65,9 @@ export class AuthController {
         description:'Senha associada ao usuário alterada',
     })
     update(@Body() dto: NewPasswordDto, @GetUser() user: { id: number, userEmail: string }) {
-        this.AuthService.updatePassword(dto, user);
+        if (this.AuthService.updatePassword(dto, user)) {
+            return {message : "update password"}
+        }
     }
 
 }
