@@ -27,7 +27,10 @@ export class AuthService {
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
-                    throw new ForbiddenException('Credentianls taken');
+                    if (error.meta.target === 'User_username_key')
+                        throw new ForbiddenException('Username already registered');
+                    if (error.meta.target === 'User_email_key')
+                        throw new ForbiddenException('Email already registered');
                 }
             }
             throw error;
@@ -80,9 +83,10 @@ export class AuthService {
 
         if (!user) throw new ForbiddenException('Email not registered');
 
-        const token = this.generateToken(user.id, dto.email, '30m');
+        const token = this.generateToken(user.id, dto.email, '5m');
 
         const code = Math.floor(Math.random() * 1000000 % 999999);
+        const code_str = code.toString().padStart(6, '0');
 
         const expiration = new Date();
         expiration.setMinutes(expiration.getMinutes() + 30);
@@ -90,8 +94,8 @@ export class AuthService {
         try {
             const user = await this.prisma.resetCode.upsert({
                 where: { userEmail: dto.email },
-                update: { code: code.toString(), expiration: expiration },
-                create: { code: code.toString(), expiration: expiration, userEmail: dto.email }
+                update: { code: code_str, expiration: expiration },
+                create: { code: code_str, expiration: expiration, userEmail: dto.email }
             });
         } catch (error) {
 
@@ -119,19 +123,30 @@ export class AuthService {
         const currentDateTime = new Date();
         if (currentDateTime > reset_code.expiration) throw new ForbiddenException('Old code');
 
-        return this.generateToken(reset_code.id, reset_code.userEmail, '45m');
+        return this.generateToken(reset_code.id, reset_code.userEmail, '5m');
     }
 
 
     async updatePassword(dto: NewPasswordDto, user: { id: number, userEmail: string }) {
         const hash_password = await argon.hash(dto.password);
-        const updateUser = await this.prisma.user.update({
-            where: { email: user.userEmail },
-            data: { password: hash_password }
-        })
+        try {
+            const updateUser = await this.prisma.user.update({
+                where: { email: user.userEmail },
+                data: { password: hash_password }
+            })
 
-        const deleteResetCode = await this.prisma.resetCode.delete({
-            where: { id: user.id }
-        });
+        } catch (error) {
+            throw new ForbiddenException('Password not updated');
+        }
+        
+        try {
+            const deleteResetCode = await this.prisma.resetCode.delete({
+                where: { id: user.id }
+            });
+        } catch (error) {
+
+        }
+
+        return true;
     }
 }
