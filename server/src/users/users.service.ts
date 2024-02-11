@@ -14,6 +14,7 @@ export class UsersService {
         },
 
       });
+      
       delete user.password;
       return user;
     }
@@ -29,34 +30,43 @@ export class UsersService {
      
       if(dto.password){
            dto.password = await argon.hash(dto.password);
-      }  
-      if(!image){ 
-        const user= await this.prisma.user.update({
-          where: {
-              id,
-            },
-            data: {
-              ...dto,
-             
-            },
-          });
-          delete user.password
-          return user;
+      }
+      try{  
+        if(!image){ 
+          const user= await this.prisma.user.update({
+            where: {
+                id,
+              },
+              data: {
+                ...dto,
+              
+              },
+            });
+            delete user.password
+            return user;
+          }
+        else{
+          const user= await this.prisma.user.update({
+            where: {
+                id,
+              },
+              data: {
+                ...dto,
+                profile_picture:image.buffer,
+              },
+            });
+            delete user.password;
+            return user;
         }
-        const user= await this.prisma.user.update({
-          where: {
-              id,
-            },
-            data: {
-              ...dto,
-              profile_picture:image.buffer,
-            },
-          });
-          delete user.password;
-          return user;
+        
+      }catch(error){
+        console.error(`Error: ${error.message}`);
+        throw new error;
+      } 
     }
     async delete(id: number){
        this.get(id);
+      try{
        const user= await this.prisma.user.delete(
         {
           where:{
@@ -64,8 +74,15 @@ export class UsersService {
           }
         }
        )
+      
        delete user.password;
        return user;
+      
+      }catch(error){
+        console.error(`Error: ${error.message}`);
+        throw error;
+
+      }
     }
    
    
