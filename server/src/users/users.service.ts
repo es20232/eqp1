@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { profile_picDto, usersupdateDto } from './users_dto';
+import { profile_picDto, usersupdateDto,userReturnDto } from './users_dto';
 import * as argon from 'argon2';
+import { Buffer } from 'buffer';
+import { bufferToBase64 } from 'src/images';
+import { userInfo } from 'os';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +19,19 @@ export class UsersService {
       });
       
       delete user.password;
+      if(user.profile_picture?.buffer.byteLength>0){
+        const buffertoconvert = Buffer.from(user.profile_picture.buffer);
+        const profile_picture = bufferToBase64(buffertoconvert);
+        delete user.profile_picture
+
+        const updatedUser=new userReturnDto()
+        updatedUser.id=user.id
+        updatedUser.email=user.email
+        updatedUser.full_name=user.full_name
+        updatedUser.username=user.username
+        updatedUser.profile_picture=profile_picture
+        return updatedUser;
+}
       return user;
     }
       catch(error){
@@ -43,6 +59,19 @@ export class UsersService {
               },
             });
             delete user.password
+            if(user.profile_picture?.buffer.byteLength>0){
+                    const buffertoconvert = Buffer.from(user.profile_picture.buffer);
+                    const profile_picture = bufferToBase64(buffertoconvert);
+                    delete user.profile_picture
+
+                    const updatedUser=new userReturnDto()
+                    updatedUser.id=user.id
+                    updatedUser.email=user.email
+                    updatedUser.full_name=user.full_name
+                    updatedUser.username=user.username
+                    updatedUser.profile_picture=profile_picture
+                    return updatedUser;
+            }
             return user;
           }
         else{
@@ -55,8 +84,20 @@ export class UsersService {
                 profile_picture:image.buffer,
               },
             });
+            
+            const buffertoconvert = Buffer.from(user.profile_picture.buffer);
+            const profile_picture = bufferToBase64(buffertoconvert);
             delete user.password;
-            return user;
+            delete user.profile_picture;
+
+            const updatedUser=new userReturnDto()
+            updatedUser.id=user.id
+            updatedUser.email=user.email
+            updatedUser.full_name=user.full_name
+            updatedUser.username=user.username
+            updatedUser.profile_picture=profile_picture
+
+            return updatedUser;
         }
         
       }catch(error){

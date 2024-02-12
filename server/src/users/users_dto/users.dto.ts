@@ -1,6 +1,6 @@
 import { BadRequestException } from "@nestjs/common";
 import { ApiProperty, } from "@nestjs/swagger";
-import { IsEmail,IsOptional,IsString, ValidationError, validate } from "class-validator";
+import { IsEmail,IsNumber,IsOptional,IsString, ValidationError, validate } from "class-validator";
 
 export class ValidateDto {
     static async sanitizeAndValidate(data: any,image: any): Promise<usersupdateDto> {
@@ -70,6 +70,30 @@ export class usersupdateDto {
    @IsOptional()
    @IsString()
     password: string;
+      
+}
+export class userReturnDto {
+    @IsOptional()
+    @IsNumber()
+    id: number;
+
+
+    @IsOptional()
+    @IsString()
+    full_name: string;
+   
+   @IsOptional() 
+   @IsString()
+    username: string;
+   
+   @IsOptional()
+   @IsEmail({}, { message: 'e-mail field must be filled in with a valid e-mail' })
+   email: string;
+   
+  
+   @IsOptional()
+   @IsString()
+    profile_picture:string;
       
 }
 export class profile_picDto {

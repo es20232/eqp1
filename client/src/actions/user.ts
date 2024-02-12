@@ -14,7 +14,7 @@ export interface updtUser {
     profile_picture?: File;
   }
   export async function edit_profile(user:updtUser,image: picture){
-    const token=cookies().get('token_user');
+    const token=cookies().get('token-user');
     const response=await axios.patch
     ('http://localhost:3001/users/edit-profile'
     ,{user,image},
@@ -22,7 +22,7 @@ export interface updtUser {
         
         headers: {
             "Authorization":"Bearer "+ token,
-            'Content-type': 'multipart/form-data charset=UTF-8'} 
+            'Content-type': 'multipart/form-data; charset=UTF-8'} 
         
     }
     ).then(response=>{
@@ -42,7 +42,7 @@ export interface updtUser {
     }
 
     export async function get_me(){
-        const token=cookies().get('token_user');
+        const token=cookies().get('token-user');
         const response=await axios.get
         ('http://localhost:3001/users/profile',
         {

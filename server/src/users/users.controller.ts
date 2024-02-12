@@ -1,4 +1,4 @@
-import { Req, Body, Controller, Get, Patch, UseInterceptors, UploadedFile, UseGuards, Delete } from '@nestjs/common';
+import { Req, Body, Controller, Get, Patch, UseInterceptors, UploadedFile, UseGuards, Delete, ParseFilePipe, MaxFileSizeValidator } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
 import { ValidateDto, profile_picDto,usersupdateDto, } from './users_dto';
@@ -9,7 +9,7 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiExtraModels, ApiOperation, ApiR
 import { UserDto } from 'src/auth/dto';
 import { JwtStrategy } from 'src/auth/strategy';
 
-
+const  MAX_FILESIZE=5242000;
 @ApiTags('users')
 @Controller('users')
 
@@ -56,7 +56,15 @@ export class UsersController {
       })
     
     @UseInterceptors(FileInterceptor('profile_picture'))
-    async userUpdate(@GetUser('username') username: string,@UploadedFile(new FileTypeValidationPipe()) image: profile_picDto,@GetUser('id') id: number,@Body() dto:any) {
+    async userUpdate(@GetUser('username') username: string,
+    @UploadedFile(new FileTypeValidationPipe(),
+    new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: MAX_FILESIZE }),
+        ],
+      }),
+    
+    ) image: profile_picDto,@GetUser('id') id: number,@Body() dto:any) {
         const dto_validated=await ValidateDto.sanitizeAndValidate(dto,image);
         return this.usersService.update(dto_validated,id,image);
     }
