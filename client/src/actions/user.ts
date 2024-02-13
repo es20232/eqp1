@@ -16,37 +16,39 @@ export interface updtUser {
   }
 
 //   export async function edit_profile(user:updtUser,image: picture){
-    export async function edit_profile(user:updtUser, image: any){
-                const token=cookies().get('token-user');
-                console.log("entrou pelo menos")
-                const response=await axios.patch
+    
+        export async function edit_profile(user: updtUser,image?:any) {
+            const token=cookies().get('token-user');
+            console.log(token);
+            const response = await axios.patch
                 (
-                'http://localhost:3001/users/edit-profile/',
-                user,
-                {
-                    
-                    headers: {
-                        "Authorization":"Bearer "+ token,
-                    }
-                    
-                }
-                ).then(response=>{
-                console.log("foiiiii!!")
-                return response.data;
-                }).catch(error =>{
+                    'http://localhost:3001/users/edit-profile/',
+                    user,
+                    {
+                        headers:
+                            { 'Content-type': 'multipart/form-data',
+                               'Authorization' : `Bearer ${token?.value}`,
+                        }
+                    },
+                )
+                .then(response => {
+                    console.log("glooriaaaa")
+                    return response.data;
+                })
+                .catch(error => {
                     if (error.response) {
                         if (error.response.status == 400) {
                             throw error.response.data.message;
+                        }else if(error.response.status==401){
+                            throw error.response.data.message;
                         } else {
-                            throw 'Unexpected error';
+                            throw error;
                         }
                     }
-
                 })
-
-                return redirect('/Profile');
-                }
-
+            return redirect('/Profile');
+        }
+        
     export async function get_me(){
         const token=cookies().get('token-user');
         const response=await axios.get
@@ -54,17 +56,21 @@ export interface updtUser {
         {
             
             headers: {
-                "Authorization":"Bearer "+ token,
+                "Authorization":`Bearer ${token?.value}`,
                 'Content-type': 'application/json; charset=UTF-8'} 
             
-        }
+        },
         ).then(response=>{
           return response.data
         }).catch(error =>{
             if (error.response) {
-                if (error.response.status == 404) {
+                if (error.response.status == 400) {
                     throw error.response.data.message;
-                } else {
+                }else if(error.response.status==401){
+                    throw error.response.data.message;
+                }
+                 
+                else {
                     throw error;
                 }
             }
