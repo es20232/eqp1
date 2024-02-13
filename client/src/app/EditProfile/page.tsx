@@ -18,8 +18,7 @@ const schema = z.object({
     name: z.string().nonempty('Digite seu nome completo'),
     username: z.string().nonempty('Digite um nome de usuário'),
     email: z.string().nonempty('Digite um email').email('Formato de email inválido'),
-    password: z.string().nonempty('Digite uma senha').min(6, 'Quantidade de caracteres inválida'),
-    confirm_password: z.string().nonempty('Confirme a senha')
+    password: z.string().nonempty('Digite uma senha').min(6, 'Quantidade de caracteres inválida')
   })
 });
 
@@ -51,12 +50,12 @@ export default function EditProfile() {
 
   // const onSubmit = async (data: updtUser, selectedImage: any) => {
   const onSubmit = async (data: any) => {
-    try {
+     try{
       await edit_profile(data, selectedImage);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+     }catch(error){
+        throw error;
+     }
+      };
 
   return (
     <div style={{ alignItems: 'center', height: '100vh' }} className="w-full h-full flex justify-center">
@@ -119,14 +118,15 @@ export default function EditProfile() {
                   {errors.address?.password && <p>{errors.address?.password.message}</p>}
                 </div>
               </div>
+              <div className="flex justify-end space-x-1.5">
+              
+              <Button type="submit" style={{ backgroundColor: '#FF2C46' }} >Salvar Alterações</Button>
+              </div>
             </form>
           </CardContent>
           <CardFooter className="flex justify-between">
             <Link href='/Profile'>
               <Button className="border border-customcolor bg-transparent text-customcolor hover:bg-red-500 hover:text-white">Cancelar</Button>
-            </Link>
-            <Link href='/Profile'>
-              <Button type="submit" style={{ backgroundColor: '#FF2C46' }}>Salvar Alterações</Button>
             </Link>
           </CardFooter>
         </Card>

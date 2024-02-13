@@ -102,7 +102,7 @@ export class UsersService {
         
       }catch(error){
         console.error(`Error: ${error.message}`);
-        throw new error;
+        throw error;
       } 
     }
     async delete(id: number){

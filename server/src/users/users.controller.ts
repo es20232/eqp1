@@ -1,4 +1,4 @@
-import { Req, Body, Controller, Get, Patch, UseInterceptors, UploadedFile, UseGuards, Delete, ParseFilePipe, MaxFileSizeValidator } from '@nestjs/common';
+import { Req, Body, Controller, Get, Patch, UseInterceptors, UploadedFile, UseGuards, Delete, ParseFilePipe, MaxFileSizeValidator, ParseFilePipeBuilder } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
 import { ValidateDto, profile_picDto,usersupdateDto, } from './users_dto';
@@ -58,13 +58,17 @@ export class UsersController {
     @UseInterceptors(FileInterceptor('profile_picture'))
     async userUpdate(@GetUser('username') username: string,
     @UploadedFile(new FileTypeValidationPipe(),
-    new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: MAX_FILESIZE }),
-        ],
-      }),
     
-    ) image: profile_picDto,@GetUser('id') id: number,@Body() dto:any) {
+    new ParseFilePipeBuilder()
+    .addMaxSizeValidator({
+      maxSize: MAX_FILESIZE
+    })
+    .build({
+      fileIsRequired: false 
+    }),
+    
+    
+    )image: profile_picDto,@GetUser('id') id: number,@Body() dto:any) {
         const dto_validated=await ValidateDto.sanitizeAndValidate(dto,image);
         return this.usersService.update(dto_validated,id,image);
     }
