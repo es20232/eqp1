@@ -47,10 +47,9 @@ export default function EditProfile() {
     }
   };
  
-  async function edit(user:updtUser ,image:FormData){
-    console.log("de novo",image)
+  async function edit(user:updtUser ,profile_picture:FormData){
     try{
-      await edit_profile(user,image)
+      await edit_profile(user,profile_picture)
     }catch(error){
       console.log(error);
     }
@@ -59,13 +58,12 @@ export default function EditProfile() {
   // const onSubmit = async (data: updtUser, selectedImage: any) => {
   const onSubmit = async (data: FormProps) => {
     const user = data.address;
-   console.log("onSubmit",selectedImage)
-    const form = new FormData();
+    const profile_picture = new FormData();
   if(selectedImage){
     console.log("aoooba")
-    form.append("Profile_picture",selectedImage);
+    profile_picture.append("Profile_picture", selectedImage);
   }else{
-    form.append("Profile_picture","")
+    profile_picture.append("Profile_picture","")
   }
  
     edit({
@@ -73,7 +71,7 @@ export default function EditProfile() {
         username: user.username,
         email: user.email,
         password: user.password,
-    },form)
+    },profile_picture)
       };
 
   return (
