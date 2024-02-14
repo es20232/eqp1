@@ -3,10 +3,10 @@ import { ApiProperty, } from "@nestjs/swagger";
 import { IsEmail,IsNumber,IsOptional,IsString, ValidationError, validate } from "class-validator";
 
 export class ValidateDto {
-    static async sanitizeAndValidate(data: any,image: any): Promise<usersupdateDto> {
+    static async sanitizeAndValidate(data: usersupdateDto,image:Express.Multer.File): Promise<usersupdateDto> {
         // Remover campos vazios        
         const sanitizedData = Object.entries(data)
-          .filter(([_, value]) => value !== "")
+          .filter(([_, value]) => value !== '')
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
         
         
@@ -14,7 +14,7 @@ export class ValidateDto {
         Object.assign(dto, sanitizedData);
         //validacao de preenchimento de campos
         const allFieldsEmpty = Object.keys(sanitizedData).every((key) => !sanitizedData[key]);
-        if(allFieldsEmpty && (!image)){
+        if(allFieldsEmpty && (image===null || image===undefined)){
             console.error("No change data was provided for any field")
             throw new BadRequestException(
                 "No change data was provided for any field"
@@ -98,12 +98,6 @@ export class userReturnDto {
 }
 export class profile_picDto {
     
-    @IsOptional()
-    buffer: Buffer;
-    @ApiProperty({
-        description:'Arquivo de imagem para atualizar foto de perfil do usuário',
-        
-    })
     @IsOptional()
     Profile_picture: Express.Multer.File;
 }

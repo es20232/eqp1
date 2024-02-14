@@ -11,23 +11,19 @@ export interface updtUser {
     password?: string;
   }
   export interface picture{
-    // profile_picture?: File;
+    
     profile_picture?: File ;
   }
 
-//   export async function edit_profile(user:updtUser,image: picture){
+
     
         export async function edit_profile(user: updtUser, image:FormData) {
             const token=cookies().get('token-user');
-            const { full_name, username, email, password } = user;
-          
-        //    const data = {
-        //     ...{ full_name, username, email, password },
-        //     ...{ teste }
-        // };
+            const { full_name, username, email, password } = user;     
             const formData = new FormData();
-            formData.append('profile_picture', image.get('profile_picture') as File);
-
+            formData.append('Profile_picture', image.get('Profile_picture') as File);
+            console.log("file sendo passado:",formData)
+            console.log(formData)
             await axios.patch
                 (
                     'http://localhost:3001/users/edit-profile/',

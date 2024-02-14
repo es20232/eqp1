@@ -41,7 +41,7 @@ export class UsersService {
       
     }
    
-    async update(dto: usersupdateDto,id: number,image?: profile_picDto,){
+    async update(dto: usersupdateDto,id: number,image?: Express.Multer.File,){
       this.get(id);
      
       if(dto.password){
