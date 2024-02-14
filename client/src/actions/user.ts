@@ -12,7 +12,7 @@ export interface updtUser {
   }
   export interface picture{
     // profile_picture?: File;
-    profile_picture?: File | undefined;
+    profile_picture?: File ;
   }
 
 //   export async function edit_profile(user:updtUser,image: picture){
@@ -20,10 +20,19 @@ export interface updtUser {
         export async function edit_profile(user: updtUser,image?:any) {
             const token=cookies().get('token-user');
             console.log(token);
+            
+            const teste=image.get("Profile_picture")
+            console.log("imagem requisicao",teste)
+           const { full_name, username, email, password } = user;
+          
+           const data = {
+            ...{ full_name, username, email, password },
+            ...{ teste }
+        };
             const response = await axios.patch
                 (
                     'http://localhost:3001/users/edit-profile/',
-                    user,
+                    teste,   
                     {
                         headers:
                             { 'Content-type': 'multipart/form-data',
@@ -32,7 +41,6 @@ export interface updtUser {
                     },
                 )
                 .then(response => {
-                    console.log("glooriaaaa")
                     return response.data;
                 })
                 .catch(error => {

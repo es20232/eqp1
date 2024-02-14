@@ -6,7 +6,7 @@ export class ValidateDto {
     static async sanitizeAndValidate(data: any,image: any): Promise<usersupdateDto> {
         // Remover campos vazios        
         const sanitizedData = Object.entries(data)
-          .filter(([_, value]) => value !== '')
+          .filter(([_, value]) => value !== "")
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
         
         

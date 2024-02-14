@@ -7,8 +7,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from 'next/link';
 import { FaPencilAlt } from 'react-icons/fa';
-import { useState } from "react";
-import { edit_profile } from '@/actions/user';
+import { useEffect, useRef, useState } from "react";
+import { edit_profile, picture, updtUser } from '@/actions/user';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,10 +23,11 @@ const schema = z.object({
 });
 
 type FormProps = z.infer<typeof schema>
-
+type imagem=picture;
 export default function EditProfile() {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-
+  const [selectedImage, setSelectedImage] = useState<File>();
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  
   const { register, handleSubmit, formState: { errors } } = useForm<FormProps>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -38,23 +39,41 @@ export default function EditProfile() {
       }
     }
   });
-
-  const handleUploadFile = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  
+  const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
       const file = e.target.files[0];
       setSelectedImage(file);
     }
   };
-
+ 
+  async function edit(user:updtUser ,image:FormData){
+    console.log("de novo",image)
+    try{
+      await edit_profile(user,image)
+    }catch(error){
+      console.log(error);
+    }
+       
+  }
   // const onSubmit = async (data: updtUser, selectedImage: any) => {
-  const onSubmit = async (data: any) => {
-     try{
-      await edit_profile(data, selectedImage);
-     }catch(error){
-        throw error;
-     }
+  const onSubmit = async (data: FormProps) => {
+    const user = data.address;
+   console.log("onSubmit",selectedImage)
+    const form = new FormData();
+  if(selectedImage){
+    console.log("aoooba")
+    form.append("Profile_picture",selectedImage);
+  }else{
+    form.append("Profile_picture","")
+  }
+ 
+    edit({
+        full_name: user.name,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+    },form)
       };
 
   return (
@@ -66,7 +85,7 @@ export default function EditProfile() {
         <Card className='w-[350px]'>
           <div className='flex justify-center'>
             <div style={{ position: 'relative', width: '80px', height: '80px', marginTop: '15px' }}>
-              <input
+            <input
                 hidden
                 accept="image/*"
                 type="file"
@@ -96,6 +115,7 @@ export default function EditProfile() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
+            
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="name">Nome completo</Label>
