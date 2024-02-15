@@ -68,7 +68,7 @@ export class UsersController {
     }),
     
     
-    )image: Express.Multer.File,@GetUser('id') id: number,@Body() dto:usersupdateDto) {
+    )image: Express.Multer.File,@GetUser('id') id: number,@Body() dto:any) {
         const dto_validated=await ValidateDto.sanitizeAndValidate(dto,image);
         return this.usersService.update(dto_validated,id,image);
     }

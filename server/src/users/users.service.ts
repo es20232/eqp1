@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException} from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { profile_picDto, usersupdateDto,userReturnDto } from './users_dto';
 import * as argon from 'argon2';
 import { Buffer } from 'buffer';
 import { bufferToBase64 } from 'src/images';
 import { userInfo } from 'os';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -101,8 +102,20 @@ export class UsersService {
         }
         
       }catch(error){
-        console.error(`Error: ${error.message}`);
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          if (error.code === 'P2002') {
+              if (error.meta.target === 'User_username_key')
+                  throw new ForbiddenException({
+                                                message: 'Username already registered',
+                                                statuscode:403,});
+              if (error.meta.target === 'User_email_key')
+                  throw new ForbiddenException({
+                                                message: 'Email already registered',
+                                                statuscode:403,});
+          }
+      }
         throw error;
+      
       } 
     }
     async delete(id: number){

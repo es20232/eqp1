@@ -1,12 +1,12 @@
 import { BadRequestException } from "@nestjs/common";
 import { ApiProperty, } from "@nestjs/swagger";
-import { IsEmail,IsNumber,IsOptional,IsString, ValidationError, validate } from "class-validator";
+import { IsEmail,IsNumber,IsOptional,IsString, Length, ValidationError, validate } from "class-validator";
 
 export class ValidateDto {
-    static async sanitizeAndValidate(data: usersupdateDto,image:Express.Multer.File): Promise<usersupdateDto> {
+    static async sanitizeAndValidate(data: any,image:Express.Multer.File): Promise<usersupdateDto> {
         // Remover campos vazios        
         const sanitizedData = Object.entries(data)
-          .filter(([_, value]) => value !== '')
+          .filter(([_, value]) => value !== "")
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
         
         
@@ -69,6 +69,7 @@ export class usersupdateDto {
     })
    @IsOptional()
    @IsString()
+   @Length(6, 10, { message:'Password must be at least 6 characters long'})
     password: string;
       
 }
