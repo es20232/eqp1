@@ -7,9 +7,34 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@radix-ui/react-label'
 import Link from 'next/link';
 // import React from 'react';
-import { FaCamera } from 'react-icons/fa';
+import { FaCamera,} from 'react-icons/fa';
+import { useEffect, useState } from 'react'
+import { getUser, get_me } from '@/actions/user'
 
 export default function Profile() {
+  const [userData,setUserData]= useState<getUser>()
+  const [loading, setLoading] = useState(true);
+
+  useEffect(()=>{
+    const get=async () => {
+      try{
+        const response=await get_me();
+        setUserData(response) 
+        setLoading(false)
+      }catch(error){
+        console.log(error);
+      }
+    }
+    
+    
+    get()
+
+  },[])
+  if (loading ) {
+    return <p>Carregando...</p>; // Componente de carregamento a ser adicionado depois
+  }
+  
+  if(loading==false){
     return (
       <div style={{alignItems:'center', height:'100vh'}} className="w-full h-full flex justify-center">
       <div className='w-full min-h-screen flex flex-col items-center justify-center' style={{ backgroundColor: '#FFFF' }}>
@@ -17,17 +42,25 @@ export default function Profile() {
           <h1 className="text-4xl" style={{ color: '#FF2C46', fontFamily: 'Linux Libertine G' }}>NANOGRAM</h1>
         </div>
       <Card className='w-[350px]'>
-        <div className='flex justify-center'>
-          <div style={{ position: 'relative', width: '80px', height: '80px', marginTop: '15px' }}>
-            <Avatar style={{ width: '80px', height: '80px', position: 'relative' }}>
-              {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
-              <AvatarFallback style={{ backgroundColor: '#FF2C46'}}></AvatarFallback>
-            </Avatar>
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', cursor: 'pointer' }}>
-                  <FaCamera size={35} color='#FFFF' />
+      <div className='flex justify-center'>
+            <div style={{ position: 'relative', width: '80px', height: '80px', marginTop: '15px' }}>
+            <label  style={ {cursor: 'pointer'}}>
+                <Avatar style={{ width: '80px', height: '80px', position: 'relative' }}>
+                  <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
+                </Avatar>
+                {userData?.profile_picture
+                  ?
+                  <Avatar style={{ width: '80px', height: '80px', position: 'absolute', top: 0 }}>
+                    <AvatarImage width={35} height={35} src={`data:image;base64,${userData.profile_picture}`} />
+                  </Avatar>
+                  :
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' , zIndex: 1}}>
+                    <FaCamera size={35} color='#FFFF' />
+                  </div>
+                }
+                 </label>
             </div>
           </div>
-        </div>
         <CardHeader>
           <CardTitle>Perfil</CardTitle>
         </CardHeader>
@@ -36,15 +69,15 @@ export default function Profile() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="name">Nome completo</Label>
-                <Input id="name" placeholder="nome completo" readOnly/>
+                <Input id="name" placeholder="nome completo" value={userData?.full_name} readOnly/>
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="username">Nome do usuário</Label>
-                <Input id="username" placeholder="@username" readOnly/>
+                <Input id="username" placeholder="username" value={userData?.username} readOnly/>
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" placeholder="email" readOnly/>
+                <Input id="email" placeholder="E-mail" value={userData?.email} readOnly/>
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Senha</Label>
@@ -65,4 +98,5 @@ export default function Profile() {
     </div>
     </div>  
     )
+}
 }
