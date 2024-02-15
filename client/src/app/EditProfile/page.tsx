@@ -13,22 +13,32 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
+// const schema = z.object({
+//   address: z.object({
+//     name: z.string().nonempty('Digite seu nome completo'),
+//     username: z.string().nonempty('Digite um nome de usuário'),
+//     email: z.string().nonempty('Digite um email').email('Formato de email inválido'),
+//     password: z.string().nonempty('Digite uma senha').min(6, 'Quantidade de caracteres inválida')
+//   })
+// });
+
 const schema = z.object({
   address: z.object({
-    name: z.string().nonempty('Digite seu nome completo'),
-    username: z.string().nonempty('Digite um nome de usuário'),
-    email: z.string().nonempty('Digite um email').email('Formato de email inválido'),
-    password: z.string().nonempty('Digite uma senha').min(6, 'Quantidade de caracteres inválida')
+    name: z.string(),
+    username: z.string(),
+    email: z.string(),
+    password: z.string(),
   })
 });
 
 type FormProps = z.infer<typeof schema>
 type imagem=picture;
 export default function EditProfile() {
+
   const [selectedImage, setSelectedImage] = useState<File>();
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   
-  const { register, handleSubmit, formState: { errors } } = useForm<FormProps>({
+  const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm<FormProps>({
     resolver: zodResolver(schema),
     defaultValues: {
       address: {
@@ -39,6 +49,14 @@ export default function EditProfile() {
       }
     }
   });
+
+  const initialFormValues = { ...getValues().address };
+
+  // Função para verificar se algum campo foi alterado
+  const hasFieldChanged = () => {
+    const currentValues = getValues().address;
+    return Object.keys(initialFormValues).some(key => currentValues[key as keyof FormProps["address"]] !== initialFormValues[key as keyof FormProps["address"]]);
+  };
   
   const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -55,24 +73,44 @@ export default function EditProfile() {
     }
        
   }
-  // const onSubmit = async (data: updtUser, selectedImage: any) => {
+
   const onSubmit = async (data: FormProps) => {
+      
+    // Verifica se pelo menos um campo foi alterado
+    if (!hasFieldChanged() && !selectedImage) {
+      console.log("Nenhuma alteração realizada.");
+      return;
+    }
+
     const user = data.address;
     const profile_picture = new FormData();
-  if(selectedImage){
-    console.log("aoooba")
-    profile_picture.append("Profile_picture", selectedImage);
-  }else{
-    profile_picture.append("Profile_picture","")
-  }
- 
-    edit({
+
+    if(selectedImage){
+      profile_picture.append("Profile_picture", selectedImage);
+    }else{
+      profile_picture.append("Profile_picture","")
+    }
+
+    // Envie apenas os campos alterados na requisição
+    const updatedFields: Partial<FormProps["address"]> = {};
+    for (const key in user) {
+      if (Object.prototype.hasOwnProperty.call(user, key)) {
+        if (user[key as keyof FormProps["address"]] !== initialFormValues[key as keyof FormProps["address"]]) {
+          updatedFields[key as keyof FormProps["address"]] = user[key as keyof FormProps["address"]];
+        }
+      }
+    }
+    
+    edit(
+      {
         full_name: user.name,
         username: user.username,
         email: user.email,
         password: user.password,
-    },profile_picture)
-      };
+      },
+      profile_picture
+    )
+  };
 
   return (
     <div style={{ alignItems: 'center', height: '100vh' }} className="w-full h-full flex justify-center">
@@ -113,7 +151,6 @@ export default function EditProfile() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
-            
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="name">Nome completo</Label>
@@ -136,9 +173,9 @@ export default function EditProfile() {
                   {errors.address?.password && <p>{errors.address?.password.message}</p>}
                 </div>
               </div>
-              <div className="flex justify-end space-x-1.5">
-              
-              <Button type="submit" style={{ backgroundColor: '#FF2C46' }} >Salvar Alterações</Button>
+              {/* <div className="flex justify-end space-x-1.5"> */}
+              <div className="flex justify-between">
+                <Button type="submit" style={{ backgroundColor: '#FF2C46' }} >Salvar Alterações</Button>
               </div>
             </form>
           </CardContent>
