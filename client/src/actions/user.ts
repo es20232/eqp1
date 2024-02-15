@@ -10,6 +10,13 @@ export interface updtUser {
     email: string;
     password: string;
   }
+  export interface getUser {
+    id:number
+    full_name: string;
+    username: string;
+    email: string;
+    profile_picture:string;
+  }
   export interface picture{
     profile_picture?: File ;
   }
@@ -35,49 +42,56 @@ export interface updtUser {
                     },
                 )
                 .then(response => {
-                    console.log(response.data);
-                    
+             
                     return response.data;
                 })
                 .catch(error => {
                     if (error.response) {
-                        if (error.response.status == 400) {
-                            throw error.response.data.message;
-                        }else if(error.response.status==401){
-                            throw error.response.data.message;
-                        } else {
-                            throw error;
+                        if (error.response) {
+                            if (error.response.status == 400 || error.response.status ==403 || error.response.status==401) {
+                                throw error.response.data.message;
+                            }
+                            else {
+                                throw error;
+                            }
                         }
                     }
                 })
             return redirect('/Profile');
     }
-        
-    export async function get_me(){
-            const token=cookies().get('token-user');
-            const response=await axios.get
-            ('http://localhost:3001/users/profile',
+
+    export async function get_me(): Promise<getUser> {
+        try {
+          const token = cookies().get('token-user');
+          const response = await axios.get(
+            'http://localhost:3001/users/profile',
             {
-                
-                headers: {
-                    "Authorization":`Bearer ${token?.value}`,
-                    'Content-type': 'application/json; charset=UTF-8'} 
-                
-            },
-            ).then(response=>{
-            return response.data
-            }).catch(error =>{
-                if (error.response) {
-                    if (error.response.status == 400 || error.response.status ==403 || error.response.status==401) {
-                        throw error.response.data.message;
-                    }
-                    else {
-                        throw error;
-                    }
-                }
+              headers: {
+                "Authorization": `Bearer ${token?.value}`,
+                'Content-type': 'application/json; charset=UTF-8'
+              },
+            }
+          );
+      
+         
+          return response.data as getUser; 
+        } catch (error: any) {
+          if (axios.isAxiosError(error)) {
+            if (error.response) {
+              if (error.response.status == 400 || error.response.status == 401) {
+                throw error.response.data.message;
+              } else {
+                throw error;
+              }
+            }
+          }
+          throw error;
+        }
+      }
         
-            })
-            return response.data;
+          
+
+
+
     
-    }     
         
