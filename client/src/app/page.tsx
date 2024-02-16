@@ -19,6 +19,8 @@ return (
        <Link href='/Login'>Login</Link>
        <br/>
        <Link href='/SignUp'>Cadastre-se</Link>
+       <br/>
+       <Link href='/Post'>Fazer Upload</Link>
     </main>
   )
 }
