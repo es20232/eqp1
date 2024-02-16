@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { FaCamera, FaUser, FaHome, FaSignOutAlt } from 'react-icons/fa';
+import { FaCamera, FaUser, FaHome, FaSignOutAlt, FaUsers } from 'react-icons/fa';
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Dashboard() {
@@ -75,6 +75,12 @@ export default function Dashboard() {
                   </DropdownMenuItem>
                 </Link>
               </DropdownMenuGroup>
+              <Link href="/Users">
+                  <DropdownMenuItem>
+                    <FaUsers size={18} style={{ marginRight: '8px' }} />
+                    Usuários
+                  </DropdownMenuItem>
+                </Link>
               <DropdownMenuSeparator />
               <Link href="/Login">
                 <DropdownMenuItem>
