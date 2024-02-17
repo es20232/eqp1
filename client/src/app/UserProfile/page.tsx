@@ -25,6 +25,7 @@ export default function UserProfile() {
                 marginBottom: '20px',
             }}>
                 <div className="item-center" >
+                <Link href="/Profile">
                 <Avatar
                 style={{
                     width: '80px',
@@ -34,10 +35,20 @@ export default function UserProfile() {
                     }}>
                     <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
+                </Link>
                 </div>
                                             
-                <div>
+                <div
+                style={{
+                    marginRight: '640px'
+                    }}>
                      <Label className="text-base" style={{ color: '#FF2C46'}}>@username</Label>
+                </div>
+
+                <div className="flex flex-col justify-end">
+                <Link href='/Dashboard'>
+                    <Button>Dashboard</Button>
+                </Link>
                 </div>
             </div>
 
@@ -71,9 +82,12 @@ export default function UserProfile() {
                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
+                <div>
+                    <Input id="desc" placeholder="descricao" readOnly/>
+                </div>
                 <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
-                <Button>Editar</Button>
-                <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
+                    <Button>Editar</Button>
+                    <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
                 </div>
             </div>
 
@@ -96,6 +110,9 @@ export default function UserProfile() {
                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
+                <div>
+                    <Input id="desc" placeholder="descricao" readOnly/>
+                </div>
                 <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
                 <Button>Editar</Button>
                 <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
@@ -119,6 +136,9 @@ export default function UserProfile() {
                     height: '50%',
                     margin:'0 auto'
                 }} />
+                <div>
+                    <Input id="desc" placeholder="descricao" readOnly/>
+                </div>
                 <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
                 <Button>Editar</Button>
                 <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
@@ -141,6 +161,9 @@ export default function UserProfile() {
                     height: '50%',
                     margin:'0 auto'
                 }} />
+                <div>
+                    <Input id="desc" placeholder="descricao" readOnly/>
+                </div>
                 <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
                 <Button>Editar</Button>
                 <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
