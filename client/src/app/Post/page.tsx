@@ -42,8 +42,8 @@ export default function Post() {
 
     const handleImageUpload = (event) => {
         setInputValue(event.target.value);
-    const file = event.target.files[0];
-    const reader = new FileReader();
+        const file = event.target.files[0];
+        const reader = new FileReader();
     
     reader.onload = (e) => {
       setImageSrc(e.target.result);
