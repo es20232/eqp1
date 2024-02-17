@@ -1,21 +1,9 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from 'next/link';
-import { useForm } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import {loginUser, lUser} from '@/actions/auth';
 import React, { useState } from 'react';
 import {
     Avatar,
@@ -44,7 +32,6 @@ export default function UserProfile() {
                     borderRadius:'50%',
                     marginRight: '20px'
                     }}>
-                {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
                     <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
                 </div>
@@ -53,6 +40,8 @@ export default function UserProfile() {
                      <Label className="text-base" style={{ color: '#FF2C46'}}>@username</Label>
                 </div>
             </div>
+
+
 
             <div
             style={{
@@ -63,6 +52,7 @@ export default function UserProfile() {
             }}></div>
             
             
+
             <div
             style={{
                 display: 'inline-block',
@@ -71,7 +61,7 @@ export default function UserProfile() {
                 marginBottom: '20px',
                 verticalAlign: 'top',
                 textAlign:'center',
-                backgroundColor:'#FF2C46'
+                backgroundColor:'#FF46'
             }}>
                 <Avatar style={{
                     width: '50%',
@@ -81,6 +71,10 @@ export default function UserProfile() {
                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
+                <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
+                <Button>Editar</Button>
+                <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
+                </div>
             </div>
 
 
@@ -102,7 +96,13 @@ export default function UserProfile() {
                 <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
+                <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
+                <Button>Editar</Button>
+                <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
+                </div>
             </div>
+
+
             <div 
             style={{
                 display: 'inline-block',
@@ -111,7 +111,7 @@ export default function UserProfile() {
                 marginBottom: '20px',
                 verticalAlign: 'top',
                 textAlign:'center',
-                backgroundColor:'#FF2C46'
+                backgroundColor:'#FF46'
             }}>
                 <img src="favicon.ico"
                 style={{
@@ -119,6 +119,32 @@ export default function UserProfile() {
                     height: '50%',
                     margin:'0 auto'
                 }} />
+                <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
+                <Button>Editar</Button>
+                <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
+                </div>
+            </div>
+
+            <div 
+            style={{
+                display: 'inline-block',
+                width: '31%',
+                marginRight: '20px',
+                marginBottom: '20px',
+                verticalAlign: 'top',
+                textAlign:'center',
+                backgroundColor:'#FF46'
+            }}>
+                <img src="favicon.ico"
+                style={{
+                    width: '50%',
+                    height: '50%',
+                    margin:'0 auto'
+                }} />
+                <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
+                <Button>Editar</Button>
+                <Button style={{ backgroundColor: '#FF2C46' }}>Excluir</Button>
+                </div>
             </div>
         </div>
     )
