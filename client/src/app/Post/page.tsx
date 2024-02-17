@@ -26,23 +26,22 @@ import {
 
 const schemaForm = z.object({
     address: z.object({
-        username: z.string().nonempty('Digite um nome de usuário'),
-        password: z.string().nonempty('Digite uma senha').min(6, 'Quantidade de caracteres inválida')
+        descricao: z.string().nonempty('Digite uma descricao')
     })
 }).transform((field) => ({
     address: {
-        username: field.address.username,
-        password: field.address.password
+        descricao: field.address.descricao
     }
 }));
 
 type FormProps = z.infer<typeof schemaForm>
 
-export default function Login() {
-
+export default function Post() {
+    const [inputValue, setInputValue] = useState('');
     const [imageSrc, setImageSrc] = useState(null);
 
-  const handleImageUpload = (event) => {
+    const handleImageUpload = (event) => {
+        setInputValue(event.target.value);
     const file = event.target.files[0];
     const reader = new FileReader();
     
@@ -62,31 +61,23 @@ export default function Login() {
         resolver: zodResolver(schemaForm),
         defaultValues: {
             address: {
-                username: '',
-                password: ''
+                descricao: ''
             }
         }
     })
 
-    async function login(user: lUser) {
-        try {
-            const response = await loginUser(user);
-        }
-        catch (error) {
-            console.error(error.message);
-            if(error.message === "Error: Credentials incorrect"){
-                setErrorMessage("Credenciais incorretas");
-            }
-        }
+    
+
+    const handleInputChange = (event) => {
+        
+    };
+
+    async function post(user: lUser) {
+        
     }
 
     const handleFormSubmit = (data: FormProps) => {
-        const user = data.address;
-
-        login ({
-            username: user.username,
-            password: user.password
-        });
+        
     }
 
     return (
@@ -109,7 +100,7 @@ export default function Login() {
                                     </div>
                                     <div className="flex justify-center">
                                     <Label htmlFor="picture" className="text-base border border-customcolor bg-transparent text-customcolor" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FF2C46', height: '50px', width: '200px', borderRadius: '10px', padding: '0.5rem 1rem', cursor: 'pointer', color: '#fff' }}>Selecionar Imagem</Label>
-                                    <Input placeholder="Selecionar Imagem" onChange={handleImageUpload} className="hidden" id="picture" type="file" accept="image/*" />
+                                    <Input required value={inputValue} placeholder="Selecionar Imagem" onChange={handleImageUpload} className="hidden" id="picture" type="file" accept="image/*" />
                                     </div>
                                 </div>
                                 </div>
@@ -132,7 +123,8 @@ export default function Login() {
                                 {/* DESCRIÇÃO */}
                                     <div className="flex flex-col space-y-1.5">
                                         <Label htmlFor="descricao"><b>Descrição</b></Label>
-                                        <Textarea className="h-[200px]" id="descricao" type="text" placeholder="Escreva uma legenda" />
+                                        {/* <Input className="h-[200px]" id="descricao" type="text" placeholder="Escreva uma legenda" /> */}
+                                         <Textarea {...register('address.descricao')} className="h-[200px]" id="descricao" type="text" placeholder="Escreva uma legenda" /> 
                                     </div>
 
                                     {/* BOTÕES */}
@@ -141,7 +133,13 @@ export default function Login() {
                                             <Button className="border border-customcolor bg-transparent text-customcolor">Cancelar</Button>
                                         </Link>
 
-                                        <Button type="submit" style={{ backgroundColor: '#FF2C46' }}>Compartilhar</Button>
+                                        <Button disabled={!inputValue.trim()} type="submit" style={{ backgroundColor: '#FF2C46' }}>Compartilhar</Button>
+                                        
+                                    </div>
+                                    <div className="flex justify-end">
+                                        {errors.address?.descricao?.message && (
+                                        <p className="text-xs" style={{ color: '#ff0033' }}> {errors.address?.descricao?.message} </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
