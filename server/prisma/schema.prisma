@@ -35,6 +35,7 @@ model ResetCode {
 model Post {
   id               Int           @id @default(autoincrement())
   publication_date DateTime      @default(now())
+  descricao        String        @db.VarChar(1024)
   userId           Int
   user             User          @relation(fields: [userId], references: [id])
   post_image       Bytes         @db.LongBlob
