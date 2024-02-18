@@ -1,5 +1,8 @@
+"use server";
+
 import axios from "axios";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export interface createpost {
     descricao: string;
@@ -8,9 +11,11 @@ export interface createpost {
   export async function create(post: createpost, image:FormData) {
               const token = cookies().get('token-user');
               const formDados = new FormData();
+              
               formDados.append('descricao',post.descricao);
               formDados.append('postimage',image.get('postimage') as File);
-              await axios.post
+              
+              const response = await axios.post 
                 (
                     'http://localhost:3001/posts/create-post/',
                     formDados,   
@@ -22,8 +27,7 @@ export interface createpost {
                     },
                 )
                 .then(response => {
-             
-                    return response.data;
+                    return response.data
                 })
                 .catch(error => {
                     if (error.response) {
@@ -38,7 +42,7 @@ export interface createpost {
                     }
                 }
                 )
-            
+            return redirect('/UserProfile')
   }
 
 

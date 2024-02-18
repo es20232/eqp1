@@ -16,13 +16,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {loginUser, lUser} from '@/actions/auth';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
   } from "@/components/ui/avatar";
   import { Textarea } from "@/components/ui/textarea"
+import { get_me } from "@/actions/user";
+import { FaCamera } from "react-icons/fa";
+import { create, createpost } from "@/actions/Posts";
 
 const schemaForm = z.object({
     address: z.object({
@@ -39,17 +42,22 @@ type FormProps = z.infer<typeof schemaForm>
 export default function Post() {
     const [inputValue, setInputValue] = useState('');
     const [imageSrc, setImageSrc] = useState(null);
+    const [selectedImage, setSelectedImage] = useState<File>();
 
-    const handleImageUpload = (event) => {
-        setInputValue(event.target.value);
-        const file = event.target.files[0];
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+        const file = e.target.files[0];
         const reader = new FileReader();
     
-    reader.onload = (e) => {
-      setImageSrc(e.target.result);
-    };
-    
-    reader.readAsDataURL(file);
+        reader.onload = (f) => {
+        setImageSrc(f.target.result);
+        };
+        
+        reader.readAsDataURL(file);
+        if (e.target.files?.length) {
+            const file = e.target.files[0];
+            setSelectedImage(file);
+        }
   };
 
 
@@ -66,20 +74,62 @@ export default function Post() {
         }
     })
 
-    
+    const [userData,setUserData]= useState<getUser>()
+    const [loading, setLoading] = useState(true);
+
+    useEffect(()=>{
+        const get=async () => {
+        try{
+            const response=await get_me();
+            setUserData(response) 
+            setLoading(false)
+        }catch(error){
+            console.log(error);
+        }
+        }
+        
+        
+        get()
+
+    },[])
 
     const handleInputChange = (event) => {
         
     };
 
-    async function post(user: lUser) {
-        
+    async function post(post: createpost, image:FormData) {
+        try {
+            const response = await create(post,image);
+        }
+        catch (error) {
+            console.error(error.message);
+            if(error.message === "Error: Credentials incorrect"){
+                setErrorMessage("Credenciais incorretas");
+            }
+        }
     }
 
     const handleFormSubmit = (data: FormProps) => {
+        const image = new FormData();
+        
+        if(selectedImage){
+            image.append("postimage",selectedImage);
+        }
+
+        const poste = data.address;
+        post({
+            descricao: poste.descricao
+        },
+        image
+        )
         
     }
 
+    if (loading ) {
+        return <p>Carregando...</p>; // Componente de carregamento a ser adicionado depois
+    }
+      
+    if(loading==false){
     return (
         <div className='w-full min-h-screen flex flex-col items-center justify-center'>
             <div className=' items-center justify-center '>
@@ -100,7 +150,7 @@ export default function Post() {
                                     </div>
                                     <div className="flex justify-center">
                                     <Label htmlFor="picture" className="text-base border border-customcolor bg-transparent text-customcolor" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FF2C46', height: '50px', width: '200px', borderRadius: '10px', padding: '0.5rem 1rem', cursor: 'pointer', color: '#fff' }}>Selecionar Imagem</Label>
-                                    <Input required value={inputValue} placeholder="Selecionar Imagem" onChange={handleImageUpload} className="hidden" id="picture" type="file" accept="image/*" />
+                                    <Input required value={inputValue} placeholder="Selecionar Imagem" onChange={(e) => handleImageUpload(e)} className="hidden" id="picture" type="file" accept="image/*" />
                                     </div>
                                 </div>
                                 </div>
@@ -113,10 +163,20 @@ export default function Post() {
                                         {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
                                             <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                                         </Avatar>
+                                        {userData?.profile_picture
+                                        ?
+                                        <Avatar style={{ width: '80px', height: '80px', position: 'absolute', top: 0 }}>
+                                            <AvatarImage width={35} height={35} src={`data:image;base64,${userData.profile_picture}`} />
+                                        </Avatar>
+                                        :
+                                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' , zIndex: 1}}>
+                                            <FaCamera size={35} color='#FFFF' />
+                                        </div>
+                                        }
                                         </div>
                                             
                                         <div  className="flex w-full space-y-9 items-center text-base">
-                                        <Label className="text-base" style={{ color: '#FF2C46'}}>@username</Label>
+                                        <Label className="text-base" style={{ color: '#FF2C46'}} >@{userData?.username}</Label>
                                         </div>           
                                     </div>
 
@@ -150,4 +210,5 @@ export default function Post() {
             </div>
         </div>
     )
+  }
 }
