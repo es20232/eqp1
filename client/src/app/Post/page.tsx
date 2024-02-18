@@ -158,14 +158,14 @@ export default function Post() {
 
                                 <div className="w-1/2 space-y-8">
                                     <div className="flex w-full space-x-9">
-                                        <div>
-                                        <Avatar style={{ width: '80px', height: '80px' }}>
+                                        <div  style={{ position: 'relative', width: '80px', height: '80px', marginTop: '15px' }}>
+                                        <Avatar style={{ position: 'relative', width: '80px', height: '80px' }}>
                                         {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
                                             <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                                         </Avatar>
                                         {userData?.profile_picture
                                         ?
-                                        <Avatar style={{ width: '80px', height: '80px', position: 'absolute', top: 0 }}>
+                                        <Avatar style={{ position:'absolute', width: '80px', height: '80px', top: 0 }}>
                                             <AvatarImage width={35} height={35} src={`data:image;base64,${userData.profile_picture}`} />
                                         </Avatar>
                                         :
