@@ -26,7 +26,7 @@ import {
 
 const schemaForm = z.object({
     address: z.object({
-        descricao: z.string().nonempty('Digite uma descricao')
+        descricao: z.string().nonempty('Digite uma descricao').max(1024,'Quantidade de caracteres excede o máximo permitido')
     })
 }).transform((field) => ({
     address: {
