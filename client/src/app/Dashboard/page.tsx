@@ -21,7 +21,9 @@ import {
     FaPlus, 
     FaRegComment, 
     FaRegHeart, 
-    FaRegThumbsDown
+    FaRegThumbsDown,
+    FaUpload,
+    FaUsers
   } from 'react-icons/fa';
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -96,10 +98,9 @@ export default function Dashboard() {
             <h1 style={{ color: '#FF2C46' }}>{userData?.full_name}</h1>
           </div>
 
-          </Link>
-          <h1>@username</h1>
-        </div>
-        <div className="flex items-center space-x-4"> {/* POST */}
+        {/*</Link>*/}
+        <h1>@username</h1>
+      </div><div className="flex items-center space-x-4"> {/* POST */}
           <div>
             <Skeleton className="h-20 w-20 rounded-full" />
             <div className="space-y-2">
@@ -115,16 +116,14 @@ export default function Dashboard() {
             <h1>Descrição</h1>
             <input type="text" placeholder="Adicione um comentário..." style={{ marginTop: '8px' }} />
           </div>
-        </div>
-        <div className="absolute bottom-4 left-4 flex items-center"> {/* botão CRIAR */}
+        </div><div className="absolute bottom-4 left-4 flex items-center"> {/* botão CRIAR */}
           <Button style={{ borderRadius: '50%', width: '50px', height: '50px', backgroundColor: '#FF2C46' }}>
             <FaPlus size={35} />
           </Button>
           <div style={{ marginLeft: '8px' }}>
             <h1 style={{ color: '#FF2C46', fontSize: '1rem' }}>Criar</h1>
           </div>
-        </div>
-        <div className="absolute top-4 right-4"> {/* MENU */}
+        </div><div className="absolute top-4 right-4"> {/* MENU */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" style={{ backgroundColor: '#FF2C46', color: '#FFFF' }}>
@@ -135,14 +134,14 @@ export default function Dashboard() {
               <DropdownMenuLabel style={{ fontFamily: 'Linux Libertine G' }}>Nanogram</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                {/* 
-                <Link href="/">
-                  <DropdownMenuItem>
-                    <FaHome size={18} style={{ marginRight: '8px' }} />
-                    Página Inicial
-                  </DropdownMenuItem>
-                </Link>
-                */}
+                {/*
+    <Link href="/">
+      <DropdownMenuItem>
+        <FaHome size={18} style={{ marginRight: '8px' }} />
+        Página Inicial
+      </DropdownMenuItem>
+    </Link>
+    */}
                 <Link href="/Profile">
                   <DropdownMenuItem>
                     <FaUser size={18} style={{ marginRight: '8px' }} />
@@ -151,23 +150,23 @@ export default function Dashboard() {
                 </Link>
                 <Link href="/Post">
                   <DropdownMenuItem>
-                   <FaUpload size={18} style={{ marginRight: '8px' }} />
+                    <FaUpload size={18} style={{ marginRight: '8px' }} />
                     Postar
                   </DropdownMenuItem>
                 </Link>
                 <Link href="/UserProfile">
                   <DropdownMenuItem>
-                   <FaCamera size={18} style={{ marginRight: '8px' }} />
+                    <FaCamera size={18} style={{ marginRight: '8px' }} />
                     Galeria
                   </DropdownMenuItem>
                 </Link>
               </DropdownMenuGroup>
               <Link href="/Users">
-                  <DropdownMenuItem>
-                    <FaUsers size={18} style={{ marginRight: '8px' }} />
-                    Usuários
-                  </DropdownMenuItem>
-                </Link>
+                <DropdownMenuItem>
+                  <FaUsers size={18} style={{ marginRight: '8px' }} />
+                  Usuários
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <Link href="/Login">
                 <DropdownMenuItem>
