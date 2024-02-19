@@ -198,15 +198,25 @@ export default function UserProfile() {
                                             
                 <div
                 style={{
-                    marginRight: '640px'
+                    marginRight: '560px'
                     }}>
                      <Label className="text-base" style={{ color: '#FF2C46'}}>@{userData?.username}</Label>
                 </div>
 
-                <div className="flex flex-col justify-end">
+                <div
+                style={{
+                    marginRight: '10px'
+                    }}>
+                    <Link href='/Post'>
+                        <Button className="border border-customcolor bg-transparent text-customcolor"> Postar</Button>
+                    </Link>
+                </div>
+
+                <div>
                 <Link href='/Dashboard'>
                     <Button>Dashboard</Button>
                 </Link>
+                
                 </div>
             </div>
 

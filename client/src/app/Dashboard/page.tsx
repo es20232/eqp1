@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { FaCamera, FaUser, FaHome, FaSignOutAlt, FaUsers } from 'react-icons/fa';
+import { FaCamera, FaUser, FaHome, FaSignOutAlt, FaUsers, FaUpload } from 'react-icons/fa';
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Dashboard() {
@@ -25,12 +25,12 @@ export default function Dashboard() {
             height: '80px',
           }}
         >
-            <Link href="/Profile">
+            <Link href="/UserProfile">
                 <Avatar style={{ width: '80px', height: '80px', position: 'relative' }}>
                 {/* <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" /> */}
                 <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
-            </Link>
+            
           <div
             style={{
               position: 'absolute',
@@ -42,6 +42,7 @@ export default function Dashboard() {
           >
             <FaCamera size={35} color="#FFFF" />
           </div>
+          </Link>
           <h1>@username</h1>
         </div>
           <div className="flex items-center space-x-4">
@@ -62,16 +63,30 @@ export default function Dashboard() {
               <DropdownMenuLabel style={{fontFamily: 'Linux Libertine G' }}>Nanogram</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
+                {/* 
                 <Link href="/">
                   <DropdownMenuItem>
                     <FaHome size={18} style={{ marginRight: '8px' }} />
                     Página Inicial
                   </DropdownMenuItem>
                 </Link>
+                */}
                 <Link href="/Profile">
                   <DropdownMenuItem>
                     <FaUser size={18} style={{ marginRight: '8px' }} />
-                    Perfil
+                    Editar Perfil
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/Post">
+                  <DropdownMenuItem>
+                   <FaUpload size={18} style={{ marginRight: '8px' }} />
+                    Postar
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/UserProfile">
+                  <DropdownMenuItem>
+                   <FaCamera size={18} style={{ marginRight: '8px' }} />
+                    Galeria
                   </DropdownMenuItem>
                 </Link>
               </DropdownMenuGroup>
