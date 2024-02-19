@@ -102,7 +102,39 @@ async delete(id: number, postid: number ) {
       }
 }
 
-feed() {
-  throw new Error('Method not implemented.');
+async feed() {
+  try{
+    const postsWithUserData = await this.prisma.post.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            profile_picture:true,
+            
+          }
+        }
+      }
+    });
+    const postsUsersWithBase64Images = postsWithUserData.map(userPost => ({
+      user: {
+        id:userPost.user.id,
+        username: userPost.user.username,
+        profile_picture: userPost.user.profile_picture.toString('base64')
+      },
+      post: {
+          id: userPost.id,
+          publication_date: userPost.publication_date,
+          descricao: userPost.descricao,
+          userId: userPost.userId,
+          post_image: userPost.post_image.toString('base64')
+      } 
+    }));
+    return postsUsersWithBase64Images;
+  }catch(error){
+     throw error;
+
+  }
+  
 }
 }

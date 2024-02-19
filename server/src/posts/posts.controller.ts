@@ -52,7 +52,7 @@ export class PostsController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get('feed')
-     allPost(){
+     feedPosts(){
            return this.postsService.feed();
      } 
   
