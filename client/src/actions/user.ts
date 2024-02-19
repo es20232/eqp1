@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import axios, { Axios } from 'axios';
+import { getuserposts } from "./Posts";
 
 export interface updtUser {
     full_name: string;
@@ -21,6 +22,12 @@ export interface getUser {
 export interface UserList {
     username: string;
     profile_picture: string;
+}
+
+export interface UserPostsList {
+    username: string;
+    profile_picture: string;
+    Posts:getuserposts[];
 }
 
 export interface picture {
@@ -123,6 +130,36 @@ export async function findAll(): Promise<UserList[]> {
         throw error;
     }
 }
+
+export async function getUser(): Promise<getuserposts> {
+    try {
+        const token = cookies().get('token-user');
+        const response = await axios.get(
+            'http://localhost:3001/users/profile',
+            {
+                headers: {
+                    "Authorization": `Bearer ${token?.value}`,
+                    'Content-type': 'application/json; charset=UTF-8'
+                },
+            }
+        );
+
+
+        return response.data as getuserposts;
+    } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                if (error.response.status == 400 || error.response.status == 401) {
+                    throw error.response.data.message;
+                } else {
+                    throw error;
+                }
+            }
+        }
+        throw error;
+    }
+}
+
 
 
 

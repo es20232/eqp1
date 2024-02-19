@@ -1,4 +1,4 @@
-import { Req, Body, Controller, Get, Patch, UseInterceptors, UploadedFile, UseGuards, Delete, ParseFilePipeBuilder } from '@nestjs/common';
+import { Req, Body, Controller, Get, Patch, UseInterceptors, UploadedFile, UseGuards, Delete, ParseFilePipeBuilder, ParseIntPipe, Param } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
 import { ValidateDto, profile_picDto, usersupdateDto, } from './users_dto';
@@ -8,13 +8,16 @@ import { GetUser } from 'src/auth/decorator';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiExtraModels, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserDto } from 'src/auth/dto';
 import { JwtStrategy } from 'src/auth/strategy';
+import { PostsService } from 'src/posts/posts.service';
 
 const MAX_FILESIZE = 5242000;
 @ApiTags('users')
 @Controller('users')
 
 export class UsersController {
-    constructor(private readonly usersService: UsersService) { }
+    constructor(private readonly usersService: UsersService,
+        private readonly postsService: PostsService) { }
+    
     @UseGuards(AuthGuard('jwt'))
     @Get('profile')
     @ApiBearerAuth('acess-token')
@@ -96,5 +99,17 @@ export class UsersController {
     findAll() {
         return this.usersService.findAll();
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':id')
+    @ApiOperation({ summary: 'Exibição de perfil de outros usuários' })
+    @ApiResponse({
+        status: 200,
+        description: 'perfil com dados e posts de outros usuários',
+    })
+     profilePosts(@Param('id',ParseIntPipe) id:number,){
+          return this.postsService.getuserPosts(id);
+          
+     } 
 
 }

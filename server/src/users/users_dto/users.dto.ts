@@ -98,6 +98,15 @@ export class userReturnDto {
       
 }
 
+export class getUserDto {
+   @IsString()
+    username: string;
+  
+   @IsString()
+    profile_picture:string;
+      
+}
+
 export class userImagemDto {
    
    @IsOptional() 
