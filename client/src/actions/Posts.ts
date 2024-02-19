@@ -121,10 +121,10 @@ export async function deletepost(delpost:deletepost) {
           }
       }
       )
-    //return redirect('/UserProfile')
+    return redirect('/UserProfile')
 }
 
-export async function getposts(): Promise<getuserposts> {
+export async function getposts() {
     try {
       const token = cookies().get('token-user');
       const response = await axios.get(
@@ -138,7 +138,7 @@ export async function getposts(): Promise<getuserposts> {
       );
   
      
-      return response.data as getuserposts; 
+      return response.data ; 
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
