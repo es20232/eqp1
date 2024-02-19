@@ -114,9 +114,11 @@ export default function Dashboard() {
             <input type="text" placeholder="Adicione um comentário..." style={{ marginTop: '8px' }} />
           </div>
         </div><div className="absolute bottom-4 left-4 flex items-center"> {/* botão CRIAR */}
-          <Button style={{ borderRadius: '50%', width: '50px', height: '50px', backgroundColor: '#FF2C46' }}>
-            <FaPlus size={35} />
-          </Button>
+          <Link href="/Post">
+            <Button style={{ borderRadius: '50%', width: '50px', height: '50px', backgroundColor: '#FF2C46' }}>
+              <FaPlus size={35} />
+            </Button>
+          </Link>
           <div style={{ marginLeft: '8px' }}>
             <h1 style={{ color: '#FF2C46', fontSize: '1rem' }}>Criar</h1>
           </div>
