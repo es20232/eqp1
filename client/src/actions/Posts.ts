@@ -91,7 +91,7 @@ export async function update(updtpost:updatepost) {
           }
       }
       )
-    //return redirect('/UserProfile')
+    return redirect('/UserProfile')
 }
 export async function deletepost(delpost:deletepost) {
     const token = cookies().get('token-user');
