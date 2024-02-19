@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from '@/components/ui/input'
 import { Label } from '@radix-ui/react-label'
 import Link from 'next/link';
-// import React from 'react';
 import { FaCamera,} from 'react-icons/fa';
 import { useEffect, useState } from 'react'
 import { getUser, get_me } from '@/actions/user'
@@ -25,16 +24,18 @@ export default function Profile() {
         console.log(error);
       }
     }
-    
-    
     get()
 
   },[])
   if (loading ) {
-    return <p>Carregando...</p>; // Componente de carregamento a ser adicionado depois
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p style={{ fontSize: '2rem', textAlign: 'center', color: '#FF2C46'}}>Carregando...</p>
+      </div>
+    )
   }
   
-  if(loading==false){
+  if(loading == false){
     return (
       <div style={{alignItems:'center', height:'100vh'}} className="w-full h-full flex justify-center">
       <div className='w-full min-h-screen flex flex-col items-center justify-center' style={{ backgroundColor: '#FFFF' }}>
@@ -44,25 +45,25 @@ export default function Profile() {
       <Card className='w-[350px]'>
       <div className='flex justify-center'>
             <div style={{ position: 'relative', width: '80px', height: '80px', marginTop: '15px' }}>
-            <label  style={ {cursor: 'pointer'}}>
-                <Avatar style={{ width: '80px', height: '80px', position: 'relative' }}>
-                  <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
-                </Avatar>
-                {userData?.profile_picture
-                  ?
-                  <Avatar style={{ width: '80px', height: '80px', position: 'absolute', top: 0 }}>
-                    <AvatarImage width={35} height={35} src={`data:image;base64,${userData.profile_picture}`} />
+              <label  style={ {cursor: 'pointer'}}>
+                  <Avatar style={{ width: '90px', height: '90px', position: 'relative' }}>
+                    <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                   </Avatar>
-                  :
-                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' , zIndex: 1}}>
-                    <FaCamera size={35} color='#FFFF' />
-                  </div>
-                }
-                 </label>
+                  {userData?.profile_picture
+                    ?
+                    <Avatar style={{ width: '90px', height: '90px', position: 'absolute', top: 0 }}>
+                      <AvatarImage width={35} height={35} src={`data:image;base64,${userData.profile_picture}`} />
+                    </Avatar>
+                    :
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' , zIndex: 1}}>
+                      <FaCamera size={35} color='#FFFF' />
+                    </div>
+                  }
+              </label>
             </div>
           </div>
         <CardHeader>
-          <CardTitle>Perfil</CardTitle>
+          <CardTitle className="text-center">Perfil</CardTitle>
         </CardHeader>
         <CardContent>
           <form>
@@ -78,10 +79,6 @@ export default function Profile() {
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" placeholder="E-mail" value={userData?.email} readOnly/>
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Senha</Label>
-                <Input id="password" placeholder="********" readOnly/>
               </div>
             </div>
           </form>

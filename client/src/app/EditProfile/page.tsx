@@ -7,20 +7,11 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from 'next/link';
 import { FaPencilAlt } from 'react-icons/fa';
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { edit_profile, picture, updtUser } from '@/actions/user';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-
-// const schema = z.object({
-//   address: z.object({
-//     name: z.string().nonempty('Digite seu nome completo'),
-//     username: z.string().nonempty('Digite um nome de usuário'),
-//     email: z.string().nonempty('Digite um email').email('Formato de email inválido'),
-//     password: z.string().nonempty('Digite uma senha').min(6, 'Quantidade de caracteres inválida')
-//   })
-// });
 
 const schema = z.object({
   address: z.object({
@@ -33,6 +24,7 @@ const schema = z.object({
 
 type FormProps = z.infer<typeof schema>
 type imagem=picture;
+
 export default function EditProfile() {
 
   const [selectedImage, setSelectedImage] = useState<File>();
@@ -71,7 +63,6 @@ export default function EditProfile() {
     }catch(error){
       console.log(error);
     }
-       
   }
 
   const onSubmit = async (data: FormProps) => {
@@ -147,7 +138,7 @@ export default function EditProfile() {
             </div>
           </div>
           <CardHeader>
-            <CardTitle>Editar Perfil</CardTitle>
+            <CardTitle className="text-center">Editar Perfil</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -173,17 +164,18 @@ export default function EditProfile() {
                   {errors.address?.password && <p>{errors.address?.password.message}</p>}
                 </div>
               </div>
-              {/* <div className="flex justify-end space-x-1.5"> */}
-              <div className="flex justify-between">
-                <Button type="submit" style={{ backgroundColor: '#FF2C46' }} >Salvar Alterações</Button>
+              <div className="mt-4">
+                <CardFooter className="flex justify-between">
+                  <div className="flex space-x-1.5">
+                    <Link href='/Profile'>
+                      <Button className="border border-customcolor bg-transparent text-customcolor hover:bg-red-500 hover:text-white">Cancelar</Button>
+                    </Link>
+                    <Button type="submit" style={{ backgroundColor: '#FF2C46' }}>Salvar Alterações</Button>
+                  </div>
+                </CardFooter>
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-between">
-            <Link href='/Profile'>
-              <Button className="border border-customcolor bg-transparent text-customcolor hover:bg-red-500 hover:text-white">Cancelar</Button>
-            </Link>
-          </CardFooter>
         </Card>
       </div>
     </div>
