@@ -97,9 +97,21 @@ export class userReturnDto {
     profile_picture:string;
       
 }
+
+export class userImagemDto {
+   
+   @IsOptional() 
+   @IsString()
+    username: string;
+     
+   @IsOptional()
+   @IsString()
+    profile_picture:string;
+      
+}
+
 export class profile_picDto {
     
     @IsOptional()
     Profile_picture: Express.Multer.File;
 }
-
