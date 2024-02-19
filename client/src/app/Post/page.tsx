@@ -103,8 +103,8 @@ export default function Post() {
         }
         catch (error) {
             console.error(error.message);
-            if(error.message === "Error: Credentials incorrect"){
-                setErrorMessage("Credenciais incorretas");
+            if(error.message === "Error: The image should be either jpeg, png, or jpg."){
+                setErrorMessage("A imagem deve ser do formato jpeg, png ou jpg");
             }
         }
     }
@@ -136,6 +136,7 @@ export default function Post() {
                 <div ></div>
                 <Card className="w-[1000px] h-[600px]">
                     <CardHeader>
+                        <CardTitle style={{ color: '#ff0033' }}><b>Crie seu post</b></CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -151,6 +152,9 @@ export default function Post() {
                                     <div className="flex justify-center">
                                     <Label htmlFor="picture" className="text-base border border-customcolor bg-transparent text-customcolor" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FF2C46', height: '50px', width: '200px', borderRadius: '10px', padding: '0.5rem 1rem', cursor: 'pointer', color: '#fff' }}>Selecionar Imagem</Label>
                                     <Input required value={inputValue} placeholder="Selecionar Imagem" onChange={(e) => handleImageUpload(e)} className="hidden" id="picture" type="file" accept="image/*" />
+                                    </div>
+                                    <div>
+                                    {errorMessage && <p className="text-xs" style={{ color: '#ff0033' }}>{errorMessage}</p>}
                                     </div>
                                 </div>
                                 </div>

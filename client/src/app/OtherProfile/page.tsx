@@ -244,22 +244,11 @@ export default function UserProfile() {
                         }} src={`data:image;base64,${post.post_image}`}>
                         </img>
                         <div>
-                        <form onSubmit={() => handleEditPost(post.id, descricao)}>
-                            <div>
-                                <Input
-                                id="descricao"
-                                defaultValue={post.descricao}
-                                onChange={(e) => setDescricao(e.target.value)}
-                                placeholder="descricao"/>
-                                {errors.address?.desc?.message && (
-                                        <p className="text-xs" style={{ color: '#ff0033' }}> {errors.address?.desc?.message} </p>
-                                    )}
-                            </div>
-                            <div className="space-x-1.5 space-y-1.5" style={{backgroundColor:'#fff'}}>
-                                <Button type="submit">Editar</Button>
-                                <Button style={{ backgroundColor: '#FF2C46' }} onClick={() => handleDeletePost(post.id)} >Excluir</Button>
-                            </div>
-                        </form>
+                            <Input
+                            id="descricao"
+                            defaultValue={post.descricao}
+                            style={{ outline: '0', boxShadow: 'none' }}
+                            placeholder="descricao" readOnly/>
                         </div>
                     </div>
                 )

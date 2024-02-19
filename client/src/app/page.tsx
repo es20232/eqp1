@@ -23,6 +23,8 @@ return (
        <Link href='/Post'>Fazer Upload</Link>
        <br/>
        <Link href='/UserProfile'>Perfil de usuário</Link>
+       <br/>
+       <Link href='/OtherProfile'>Perfil de OUTRO usuário</Link>
     </main>
   )
 }
