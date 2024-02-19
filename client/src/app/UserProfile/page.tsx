@@ -40,6 +40,7 @@ export default function UserProfile() {
             try{
                 const response=await getposts();
                 setUserPost(response)
+                setLoading(false)
             }catch(error){
                 console.log(error);
             }
@@ -48,7 +49,7 @@ export default function UserProfile() {
 
     },[getposts()])
 
-    async function deletepost(id: deletepost) {
+    async function deletePostApiCall(id: deletepost) {
         try {
             const response = await deletepost(id);
         }
@@ -63,7 +64,7 @@ export default function UserProfile() {
     const handleDeletePost = async (id: number) => {
         setLoading(true);
         try {
-            await deletepost({id});
+            await deletePostApiCall({postid: id});
             // Atualize userPost após a exclusão bem-sucedida (se necessário)
         } catch (error) {
             console.error(error);
