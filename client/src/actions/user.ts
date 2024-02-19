@@ -23,6 +23,12 @@ export interface UserList {
     username: string;
     profile_picture: string;
 }
+export interface UserFeed {
+    id:number
+    username: string;
+    profile_picture: string;
+}
+
 
 export interface UserPostsList {
     username: string;

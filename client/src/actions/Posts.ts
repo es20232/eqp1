@@ -3,6 +3,7 @@
 import axios from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { UserFeed } from "./user";
 
 export interface createpost {
     descricao: string;
@@ -11,6 +12,11 @@ export interface updatepost {
     postid?:number;
     descricao: string;
 }
+export interface feedinfos{
+  user:UserFeed[];
+  posts:getuserposts[];
+};
+
 export interface getuserposts {
     userId:number;
     id:number;
@@ -153,7 +159,7 @@ export async function getposts() {
     }
   }
 
-  export async function Feed() {
+  export async function Feed() :Promise<feedinfos>{
     try {
       const token = cookies().get('token-user');
       const response = await axios.get(
@@ -167,7 +173,7 @@ export async function getposts() {
       );
   
      
-      return response.data ; 
+      return response.data as feedinfos ; 
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
