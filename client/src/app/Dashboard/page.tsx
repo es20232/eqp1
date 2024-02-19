@@ -97,9 +97,6 @@ export default function Dashboard() {
           >
             <h1 style={{ color: '#FF2C46' }}>{userData?.full_name}</h1>
           </div>
-
-        {/*</Link>*/}
-        <h1>@username</h1>
       </div><div className="flex items-center space-x-4"> {/* POST */}
           <div>
             <Skeleton className="h-20 w-20 rounded-full" />
@@ -134,14 +131,6 @@ export default function Dashboard() {
               <DropdownMenuLabel style={{ fontFamily: 'Linux Libertine G' }}>Nanogram</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                {/*
-    <Link href="/">
-      <DropdownMenuItem>
-        <FaHome size={18} style={{ marginRight: '8px' }} />
-        Página Inicial
-      </DropdownMenuItem>
-    </Link>
-    */}
                 <Link href="/Profile">
                   <DropdownMenuItem>
                     <FaUser size={18} style={{ marginRight: '8px' }} />
