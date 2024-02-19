@@ -6,6 +6,12 @@ export class createpostdto {
     @IsString()
     descricao: string;
 }
+export class updatepostdto {
+    @Length(1, 1024)
+    @IsString()
+    descricao: string;
+}
+
 export class returnpostdto{
 
     @IsNumber()

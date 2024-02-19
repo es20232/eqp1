@@ -1,13 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { createpostdto, returnpostdto } from './posts_dto';
+import { HttpCode, Injectable } from '@nestjs/common';
+import { createpostdto, returnpostdto, updatepostdto } from './posts_dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Buffer } from 'buffer';
 import { Prisma } from '@prisma/client';
 import { bufferToBase64 } from 'src/images';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class PostsService {
+ 
+  
+  
   constructor(private prisma: PrismaService){}
+  async getPosts(id: number) {
+   try{
+    const userPosts=await this.prisma.post.findMany({
+      where: {
+        userId:id, 
+       },
+
+    })
+    const postsWithBase64Images = userPosts.map(post => ({
+      ...post,
+      post_image: post.post_image.toString('base64'),
+    }));
+    return postsWithBase64Images;
+  }catch(error){
+     throw error;
+
+  }
+    
+  }
+
   async create(id: number, dto: createpostdto,image: Express.Multer.File,) {
     const data = {
         userId :id,
@@ -31,6 +55,54 @@ export class PostsService {
       throw error;
   }
        
-  }
- 
+}
+async edit(id: number,postid:number ,dto: updatepostdto) {
+  try{
+    const upost= await this.prisma.post.update(
+      {
+        where: {
+           userId: id,
+           id:postid, 
+          },
+          data: {
+            descricao:dto.descricao,
+          
+          },
+        }
+    )
+    const buffertoconvert = Buffer.from(upost.post_image.buffer);
+    const image = bufferToBase64(buffertoconvert);
+
+    const updatedpost=new returnpostdto()
+    updatedpost.id=upost.id;
+    updatedpost.Userid=upost.userId;
+    updatedpost.descricao=upost.descricao;
+    updatedpost.publication_date=upost.publication_date;
+    updatedpost.postimage= image;
+    return updatedpost;
+      }catch(error){
+        throw error
+
+      }
+}
+async delete(id: number, postid: number ) {
+  try{
+    const dpost= await this.prisma.post.delete(
+      {
+        where: {
+           userId: id,
+           id:postid,
+          },
+        }
+    
+    )
+    return HttpCode(204);
+      }catch(error){
+        throw error
+      }
+}
+
+feed() {
+  throw new Error('Method not implemented.');
+}
 }
