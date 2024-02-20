@@ -29,6 +29,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useEffect, useState } from 'react'
 import { getUser, get_me } from '@/actions/user'
+import { feedinfos, Feed } from '@/actions/Posts'
 
 export default function Dashboard() {
   const [userData, setUserData] = useState<getUser>();
@@ -36,6 +37,7 @@ export default function Dashboard() {
   const [like, setLike] = useState(false);
   const [comment, setComment] = useState(false);
   const [deslike, setDeslike] = useState(false);
+  const [dataFeed, setDataFeed] = useState<feedinfos[]>([]);
 
   useEffect(() => {
     const get = async () => {
@@ -48,6 +50,18 @@ export default function Dashboard() {
       }
     };
     get();
+    
+    const feed = async () => {
+      try {
+        const response = await Feed();
+        setDataFeed(response);
+        setLoading(false);
+      } catch (error) {
+        console.log('Error Feed', error)
+      }
+    };
+    feed();
+
   }, []);
 
   if (loading) {
@@ -59,6 +73,7 @@ export default function Dashboard() {
   }
 
   if (!loading) {
+    
     return (
       <div className="flex justify-center items-center h-screen relative">
         <div
@@ -97,23 +112,37 @@ export default function Dashboard() {
           >
             <h1 style={{ color: '#FF2C46' }}>{userData?.full_name}</h1>
           </div>
-      </div><div className="flex items-center space-x-4"> {/* POST */}
-          <div>
-            <Skeleton className="h-20 w-20 rounded-full" />
-            <div className="space-y-2">
-              <h1 style={{ color: '#FF2C46' }}>@username</h1>
-            </div>
-            <Skeleton className="h-[300px] w-[400px]" style={{ marginBottom: '16px' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FaRegHeart size={26} />
-              <FaRegComment size={26} />
-              <FaRegThumbsDown size={26} />
-            </div>
-            <h1>200 curtidas</h1>
-            <h1>Descrição</h1>
-            <input type="text" placeholder="Adicione um comentário..." style={{ marginTop: '8px' }} />
-          </div>
-        </div><div className="absolute bottom-4 left-4 flex items-center"> {/* botão CRIAR */}
+      </div>
+
+          {dataFeed.length > 0 ? (
+            dataFeed.map((post, key) => {
+
+              return (
+                <div className="flex items-center space-x-4" key = {key}> {/* POST */}
+                <div >
+                  <Skeleton className="h-20 w-20 rounded-full" />
+                  <div className="space-y-2">
+                    <h1 style={{ color: '#FF2C46' }}>@username</h1>
+                  </div>
+                  <Skeleton className="h-[300px] w-[400px]" style={{ marginBottom: '16px' }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <FaRegHeart size={26} />
+                    <FaRegComment size={26} />
+                    <FaRegThumbsDown size={26} />
+                  </div>
+                  <h1>200 curtidas</h1>
+                  <h1>{post.posts.descricao}</h1>
+                  <input type="text" placeholder="Adicione um comentário..." style={{ marginTop: '8px' }} />
+                </div>
+              </div>
+              )
+            })
+            ) : (
+              <p>Test</p>
+            )
+          }
+
+        <div className="absolute bottom-4 left-4 flex items-center"> {/* botão CRIAR */}
           <Link href="/Post">
             <Button style={{ borderRadius: '50%', width: '50px', height: '50px', backgroundColor: '#FF2C46' }}>
               <FaPlus size={35} />

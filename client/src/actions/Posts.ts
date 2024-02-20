@@ -13,8 +13,8 @@ export interface updatepost {
     descricao: string;
 }
 export interface feedinfos{
-  user:UserFeed[];
-  posts:getuserposts[];
+  user:UserFeed;
+  posts:getuserposts;
 };
 
 export interface getuserposts {
@@ -159,7 +159,8 @@ export async function getposts() {
     }
   }
 
-  export async function Feed() :Promise<feedinfos>{
+  // export async function Feed(): Promise<feedinfos> {
+    export async function Feed() {
     try {
       const token = cookies().get('token-user');
       const response = await axios.get(
@@ -171,9 +172,8 @@ export async function getposts() {
           },
         }
       );
-  
      
-      return response.data as feedinfos ; 
+      return response.data ; 
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
