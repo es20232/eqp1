@@ -111,5 +111,10 @@ export class UsersController {
           return this.postsService.getuserPosts(id);
           
      } 
+     @Get(':id')
+      getUser(@Param('id',ParseIntPipe) id:number,){
+           return this.usersService.get(id);
+           
+      } 
 
 }

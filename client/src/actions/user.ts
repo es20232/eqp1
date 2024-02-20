@@ -20,6 +20,7 @@ export interface getUser {
 }
 
 export interface UserList {
+    id:number
     username: string;
     profile_picture: string;
 }
@@ -27,13 +28,6 @@ export interface UserFeed {
     id:number
     username: string;
     profile_picture: string;
-}
-
-
-export interface UserPostsList {
-    username: string;
-    profile_picture: string;
-    Posts:getuserposts[];
 }
 
 export interface picture {
@@ -93,7 +87,6 @@ export async function get_me(): Promise<getUser> {
             }
         );
 
-
         return response.data as getUser;
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
@@ -137,11 +130,11 @@ export async function findAll(): Promise<UserList[]> {
     }
 }
 
-export async function getUser(): Promise<getuserposts> {
+export async function getUserPosts(id:string): Promise<getuserposts[]> {
     try {
         const token = cookies().get('token-user');
         const response = await axios.get(
-            'http://localhost:3001/users/profile',
+            `http://localhost:3001/users/${id}`,
             {
                 headers: {
                     "Authorization": `Bearer ${token?.value}`,
@@ -151,7 +144,35 @@ export async function getUser(): Promise<getuserposts> {
         );
 
 
-        return response.data as getuserposts;
+        return response.data as getuserposts[];
+    } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                if (error.response.status == 400 || error.response.status == 401) {
+                    throw error.response.data.message;
+                } else {
+                    throw error;
+                }
+            }
+        }
+        throw error;
+    }
+}
+
+export async function getOtherUser(id:string): Promise<getUser> {
+    try {
+        const token = cookies().get('token-user');
+        const response = await axios.get(
+            `http://localhost:3001/users/${id}`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token?.value}`,
+                    'Content-type': 'application/json; charset=UTF-8'
+                },
+            }
+        );
+
+        return response.data as getUser;
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
             if (error.response) {

@@ -21,20 +21,19 @@ export class UsersService {
             });
 
             delete user.password;
+            const updatedUser = new userReturnDto()
+            updatedUser.id = user.id
+            updatedUser.email = user.email
+            updatedUser.full_name = user.full_name
+            updatedUser.username = user.username
             if (user.profile_picture?.buffer.byteLength > 0) {
                 const buffertoconvert = Buffer.from(user.profile_picture.buffer);
                 const profile_picture = bufferToBase64(buffertoconvert);
-                delete user.profile_picture
-
-                const updatedUser = new userReturnDto()
-                updatedUser.id = user.id
-                updatedUser.email = user.email
-                updatedUser.full_name = user.full_name
-                updatedUser.username = user.username
                 updatedUser.profile_picture = profile_picture
                 return updatedUser;
-            }
-            return user;
+            }            
+            updatedUser.profile_picture = ''
+            return updatedUser;
         }
         catch (error) {
             console.error(`Error : ${error.message}`);

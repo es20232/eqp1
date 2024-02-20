@@ -147,43 +147,15 @@ async getuserPosts(id: number) {
       where: {
         userId:id, 
        },
-
-    })
-    const user=await this.prisma.user.findUnique({
-      where:{
-        id,
-      },select:{
-        username:true,
-        profile_picture:true,
-      }
     })
     const postsWithBase64Images = userPosts.map(post => ({
       ...post,
       post_image: post.post_image.toString('base64'),
     }));
 
-    const getUser=new getUserDto();
-    getUser.username=user.username
-
-    if (user.profile_picture?.buffer.byteLength > 0) {
-                    
-      const buffertoconvert = Buffer.from(user.profile_picture.buffer);
-      const profile_picture = bufferToBase64(buffertoconvert);
-      getUser.profile_picture=profile_picture;
-      return{
-        getUser,
-        postsWithBase64Images
-      } 
-    }
-    getUser.profile_picture='';
-    return {
-      username:getUser.username,
-      profile_picture:getUser.profile_picture,
-      postsWithBase64Images
-    };
+    return postsWithBase64Images;
   }catch(error){
      throw error;
-
   }
 }
 }
