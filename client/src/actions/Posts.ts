@@ -13,8 +13,17 @@ export interface updatepost {
     descricao: string;
 }
 export interface feedinfos{
-  user:UserFeed;
-  posts:getuserposts;
+ user:{
+  id:number
+  username: string;
+  profile_picture: string;
+ }
+ post:{ userId:number;
+  id:number;
+  descricao:string;
+  post_image:string;
+  publication_date:Date;
+ }
 };
 
 export interface getuserposts {
@@ -159,7 +168,7 @@ export async function getposts() {
     }
   }
 
-  // export async function Feed(): Promise<feedinfos> {
+ 
     export async function Feed() {
     try {
       const token = cookies().get('token-user');

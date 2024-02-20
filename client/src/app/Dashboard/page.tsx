@@ -71,7 +71,7 @@ export default function Dashboard() {
       </div>
     );
   }
-
+  
   if (!loading) {
     
     return (
@@ -113,25 +113,31 @@ export default function Dashboard() {
             <h1 style={{ color: '#FF2C46' }}>{userData?.full_name}</h1>
           </div>
       </div>
-
+          
           {dataFeed.length > 0 ? (
+            
             dataFeed.map((post, key) => {
-
+              
               return (
                 <div className="flex items-center space-x-4" key = {key}> {/* POST */}
                 <div >
-                  <Skeleton className="h-20 w-20 rounded-full" />
+                  <Avatar style={{ width: '80px', height: '80px', position: 'absolute', top: 0 }}>
+                          <AvatarImage width={40} height={40} src={`data:image;base64${post.user.profile_picture}`} />
+                        </Avatar>
+                      ) : (
+                        <Skeleton className="h-20 w-20 rounded-full" />
                   <div className="space-y-2">
-                    <h1 style={{ color: '#FF2C46' }}>@username</h1>
+                    <h1 style={{ color: '#FF2C46' }}>{post.user.username}</h1>
                   </div>
-                  <Skeleton className="h-[300px] w-[400px]" style={{ marginBottom: '16px' }} />
+                 {/* <Skeleton className="h-[300px] w-[400px]" style={{ marginBottom: '16px' }} />*/}
+                 <img src={`data:image;base64,${post.post.post_image}`}></img>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <FaRegHeart size={26} />
                     <FaRegComment size={26} />
                     <FaRegThumbsDown size={26} />
                   </div>
                   <h1>200 curtidas</h1>
-                  <h1>{post.posts.descricao}</h1>
+                  <h1>{post.post.descricao}</h1>
                   <input type="text" placeholder="Adicione um comentário..." style={{ marginTop: '8px' }} />
                 </div>
               </div>
