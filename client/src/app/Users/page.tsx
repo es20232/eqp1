@@ -58,7 +58,7 @@ export default function CardWithForm() {
 
                                         {list?.map((user) => (
                                             <div key={user?.username} className="mb-4">
-                                                <Link href={`/users/${user?.username}`} className="flex items-center justify-center space-x-2 cursor-pointer">
+                                                <Link href={`/OtherProfile?username=${user.username}`} className="flex items-center justify-center space-x-2 cursor-pointer">
                                                     <img src={`data:image;base64,${user?.profile_picture}`} alt="User profile" className="w-10 h-10 rounded-full" />
                                                     <span className="text-lg">{user?.username}</span>
                                                 </Link>
