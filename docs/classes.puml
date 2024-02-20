@@ -1,0 +1,67 @@
+@startuml Class_diagram
+left to right direction
+class Usuário{
+  -id:int
+  - nome_completo: string
+  - nome_de_usuario: string
+  - email: string
+  - senha: string
+  - foto_de_perfil:Imagem
+  + postar():void
+  + editar_perfil():void
+  + recuperar_senha():void
+  + logout():void 
+  + procurar_usuario(nome_de_usuario): Usuario[]
+  + ver_galeria_de imagens():Imagem[]
+
+}
+class Imagem {
+  - id: int
+  - data_de_envio:date
+  - nome:string
+  - descricao: string
+  +editar_postagem():void
+  +deletar_imagem():void
+  +enviar_imagem():void
+}
+
+class Postagem {
+  - id: int
+  - título: string
+  - conteúdo: string
+  - data_de_Publicacão: date
+  -número_de_likes:int
+  -número_de_deslikes:int
+  + adicionar_like():void
+  + adicionar_deslike():void
+  +editar_postagem(): void
+  +deletar_postagem():void
+  +visualizar_postagem():void
+}
+
+class Comentário {
+  - id: int
+  - usuário: Usuário
+  - postagem:Postagem
+  - conteúdo: string
+  - data_do_comentário: date
+  +adicionar_comentário():void
+  +editar_comentário():void
+  +deletar_comentário():void
+}
+
+class Like {
+  - usuário:Usuário
+  - postagem:Postagem
+  - comentário: Comentário
+  -like:boolean
+  -deslike:boolean
+}
+Usuário "0..*" --  "0..*" Postagem:Interage 
+(Usuário,Postagem) . Like
+Usuário "1" -->  "0..*" Postagem:Realiza
+Usuário "1" --> "0..*" Imagem:Envia
+Imagem "1" *--"0..*" Postagem:Contém
+Postagem "1" -- "1" Comentário:Contém
+Usuário "1" -right-> "0..*" Comentário:Realiza
+@enduml
