@@ -147,6 +147,7 @@ export class UsersService {
         try {
             const users = await this.prisma.user.findMany({
                 select: {
+                    id:true,
                     username: true,
                     profile_picture: true
                 }
@@ -160,7 +161,7 @@ export class UsersService {
                     const buffertoconvert = Buffer.from(users[i].profile_picture.buffer);
                     profile_picture = bufferToBase64(buffertoconvert);
                 }
-
+                upUser.id = users[i].id
                 upUser.username = users[i].username
                 upUser.profile_picture = profile_picture
 

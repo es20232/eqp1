@@ -108,6 +108,9 @@ export class getUserDto {
 }
 
 export class userImagemDto {
+    @IsOptional() 
+    @IsNumber()
+    id: number;
    
    @IsOptional() 
    @IsString()
