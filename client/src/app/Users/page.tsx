@@ -55,17 +55,21 @@ export default function CardWithForm() {
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="name" className="w-full h-full flex items-center justify-center">Lista de usuários do Nanogram</Label>
                                     <ScrollArea className="h-full w-full rounded-md border">
-
-                                        {list?.map((user) => (
-                                            <div key={user?.username} className="mb-4">
-                                                <Link href={`/users/${user?.username}`} className="flex items-center justify-center space-x-2 cursor-pointer">
+                                    {list?.length > 0 ? (
+                                        list?.map((user) => (
+                                            <div key={user?.id} className="mb-4">
+                                                <Link href={`/OtherProfile?id=${user?.id}`} passHref className="flex items-center justify-center space-x-2 cursor-pointer">
                                                     <img src={`data:image;base64,${user?.profile_picture}`} alt="User profile" className="w-10 h-10 rounded-full" />
                                                     <span className="text-lg">{user?.username}</span>
                                                 </Link>
                                                 <Separator className="my-2" />
                                             </div>
                                         ))
-                                        }
+                                        
+                                    ) : (
+                                        <p>Sem usuários para exibir.</p>
+                                    )
+                                    }
                                     </ScrollArea>
                                     <div className="flex justify-center">
                                         <Link href='/Dashboard'>

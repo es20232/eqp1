@@ -11,51 +11,32 @@ import {
     AvatarImage,
   } from "@/components/ui/avatar";
 import { FaCamera } from "react-icons/fa";
-import { getUser, get_me } from "@/actions/user";
+import { getOtherUser, getUser, getUserPosts, get_me } from "@/actions/user";
 import { deletepost, getposts, getuserposts, update, updatepost } from "@/actions/Posts";
 import { postcss } from "tailwindcss";
-import { z } from 'zod';
-import { useForm } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation'
 
-const schemaForm = z.object({
-    address: z.object({
-        desc: z.string()
-    })
-}).transform((field) => ({
-    address: {
-        desc: field.address.desc    
-    }
-}));
 
-type FormProps = z.infer<typeof schemaForm>
 
 export default function UserProfile() {
 
     const [userData,setUserData]= useState<getUser>()
     const [loading, setLoading] = useState(true)
-    const [id,setId] = useState<number>()
     const [errorMessage, setErrorMessage] = useState("")
     const [userPost,setUserPost] = useState<getuserposts[]>([])
-    const [descricao, setDescricao] = useState('');
+    const [userOther,setUserOther] = useState<getUser>()
 
-    const { handleSubmit, setValue, register, formState: { errors } } = useForm<FormProps>({
-        criteriaMode: 'all',
-        mode: 'all',
-        resolver: zodResolver(schemaForm),
-        defaultValues: {
-            address: {
-                desc:''
-            }
-        }
-    })
+    const searchParams = useSearchParams()
+    const userId = searchParams.get('id')
 
     useEffect(()=>{
         const get=async () => {
         try{
-            const response=await get_me();
-            setUserData(response) 
-            setLoading(false)
+            if(userId){
+                const response=await getOtherUser(userId);
+                setUserOther(response) 
+                setLoading(false)
+            }
         }catch(error){
             console.log(error);
         }
@@ -64,9 +45,11 @@ export default function UserProfile() {
 
         const getpost=async () => {
             try{
-                const response=await getposts();
-                setUserPost(response)
-                setLoading(false)
+                if(userId){
+                    const response=await getUserPosts(userId);
+                    setUserPost(response)
+                    setLoading(false)
+                }
             }catch(error){
                 console.log(error);
             }
@@ -84,74 +67,7 @@ export default function UserProfile() {
         }
     };
 
-    async function deletePostApiCall(id: deletepost) {
-        try {
-            const response = await deletepost(id);
-            await refreshPosts();
-        }
-        catch (error) {
-            console.error(error.message);
-            if(error.message === "Error: Credentials incorrect"){
-                setErrorMessage("Credenciais incorretas");
-            }
-        }
-    }
 
-    const handleDeletePost = async (id: number) => {
-        setLoading(true);
-        try {
-            await deletePostApiCall({postid: id});
-            // Atualize userPost após a exclusão bem-sucedida (se necessário)
-        } catch (error) {
-            console.error(error);
-            // Lidar com erros, se necessário
-        }
-        setLoading(false);
-    };
-    
-
-    
-    async function editDescription(postToUpdate: updatepost) {
-        try {
-            const response = await update(postToUpdate);
-            await refreshPosts();
-        }
-        catch (error) {
-            console.error(error.message);
-            if(error.message === "Error: Credentials incorrect"){
-                setErrorMessage("Credenciais incorretas");
-            }
-        }
-    }
-
-    const handleEditPost = async (id: number, desc: string) => {
-        console.log(id, desc);
-        setLoading(true);
-        try {
-            await editDescription(
-                {postid: id,
-                descricao:desc}
-                );
-            // Atualize userPost após a exclusão bem-sucedida (se necessário)
-        } catch (error) {
-            console.error(error);
-            // Lidar com erros, se necessário
-        }
-        setLoading(false);
-    };
-
-    {/*
-    const handleFormSubmit = (data: FormProps) => {
-        const postToEdit = data.address;
-        setId(postToEdit.id);
-
-        editDescription({
-            postid: id,
-            descricao : postToEdit.desc
-        });
-
-    }
-    */}
     if (loading ) {
         return <p>Carregando...</p>; // Componente de carregamento a ser adicionado depois
       }
@@ -183,10 +99,10 @@ export default function UserProfile() {
                     }}>
                     <AvatarFallback style={{ backgroundColor: '#FF2C46' }}></AvatarFallback>
                 </Avatar>
-                {userData?.profile_picture
+                {userOther?.profile_picture
                   ?
                   <Avatar style={{ width: '80px', height: '80px', position: 'absolute', top: 0 }}>
-                    <AvatarImage width={35} height={35} src={`data:image;base64,${userData.profile_picture}`} />
+                    <AvatarImage width={35} height={35} src={`data:image;base64,${userOther?.profile_picture}`} />
                   </Avatar>
                   :
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' , zIndex: 1}}>
@@ -198,15 +114,25 @@ export default function UserProfile() {
                                             
                 <div
                 style={{
-                    marginRight: '640px'
+                    marginRight: '545px'
                     }}>
-                     <Label className="text-base" style={{ color: '#FF2C46'}}>@{userData?.username}</Label>
+                     <Label className="text-base" style={{ color: '#FF2C46'}}>@{userOther?.username}</Label>
+                </div>
+
+                <div
+                style={{
+                    marginRight: '10px'
+                    }}>
+                    <Link href='/Users'>
+                        <Button className="border border-customcolor bg-transparent text-customcolor"> Usuários </Button>
+                    </Link>
                 </div>
 
                 <div className="flex flex-col justify-end">
                 <Link href='/Dashboard'>
                     <Button>Dashboard</Button>
                 </Link>
+                
                 </div>
             </div>
 

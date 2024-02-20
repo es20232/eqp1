@@ -134,7 +134,7 @@ export async function getUserPosts(id:string): Promise<getuserposts[]> {
     try {
         const token = cookies().get('token-user');
         const response = await axios.get(
-            `http://localhost:3001/users/${id}`,
+            `http://localhost:3001/posts/${id}`,
             {
                 headers: {
                     "Authorization": `Bearer ${token?.value}`,
@@ -172,6 +172,7 @@ export async function getOtherUser(id:string): Promise<getUser> {
             }
         );
 
+        console.log(response.data);
         return response.data as getUser;
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
