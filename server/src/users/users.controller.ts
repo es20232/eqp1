@@ -100,17 +100,6 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get(':id')
-    @ApiOperation({ summary: 'Exibição de perfil de outros usuários' })
-    @ApiResponse({
-        status: 200,
-        description: 'perfil com dados e posts de outros usuários',
-    })
-     profilePosts(@Param('id',ParseIntPipe) id:number,){
-          return this.postsService.getuserPosts(id);
-          
-     } 
      @Get(':id')
       getUser(@Param('id',ParseIntPipe) id:number,){
            return this.usersService.get(id);

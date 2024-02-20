@@ -55,6 +55,12 @@ export class PostsController {
      feedPosts(){
            return this.postsService.feed();
      } 
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':id')
+     profilePosts(@Param('id',ParseIntPipe) id:number,){
+          return this.postsService.getuserPosts(id);
+          
+     } 
   
   
 }
